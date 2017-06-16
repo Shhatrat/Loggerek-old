@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 25
@@ -35,6 +36,16 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
     compile "com.squareup.retrofit2:retrofit:2.0.0"
     compile "com.squareup.retrofit2:converter-moshi:2.0.0"
+
+    compile 'se.akerfeldt:okhttp-signpost:1.1.0'
+    compile 'com.squareup.okhttp3:okhttp:3.0.0-RC1'
+    compile 'oauth.signpost:signpost-core:1.2.1.2'
+
+    compile "com.chibatching.kotpref:kotpref:2.1.1"
+    compile "com.chibatching.kotpref:initializer:2.1.1"
+    compile "com.chibatching.kotpref:gson-support:2.1.1"
+
+    compile 'com.afollestad.material-dialogs:core:0.9.4.5'
 
 
     testCompile 'junit:junit:4.12'
