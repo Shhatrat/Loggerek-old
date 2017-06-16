@@ -37,10 +37,9 @@ class LogActivity : AppCompatActivity() {
         }
         val op = getOP(intent.data.toString())
 
-        f_mylog.setOnClickListener {
-        logCache(op, getDefaultLog())
-        }
-
+        f_mylog.setOnClickListener { logCache(op, getDefaultLog()) }
+        f_good.setOnClickListener { logCache(op, getGoodLog()) }
+        f_bad.setOnClickListener { logCache(op, getBadLog()) }
     }
 
 
@@ -56,7 +55,7 @@ class LogActivity : AppCompatActivity() {
     }
 
     fun success(u: com.shhatrat.loggerek.models.Log) {
-       val sn = Snacky.builder().setActivty(this).setText(u.message).info()
+       val sn = Snacky.builder().setActivty(this).setText(u.message).setDuration(2000).info()
         f_progress.visibility = GONE
         sn.addCallback(object : Snackbar.Callback(){
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
@@ -70,7 +69,7 @@ class LogActivity : AppCompatActivity() {
 
     fun error(message: String?) {
         f_progress.visibility = GONE
-        val sn = Snacky.builder().setActivty(this).setText(message).error()
+        val sn = Snacky.builder().setActivty(this).setText(message).setDuration(2000).error()
         sn.addCallback(object : Snackbar.Callback(){
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
@@ -92,6 +91,20 @@ class LogActivity : AppCompatActivity() {
         if(Data.defaultLog!!.isEmpty())
             return "Dzięki za skrzynkę!"
         return Data.defaultLog?: "Dzięki za skrzynkę!"
+    }
+
+    private fun getBadLog() : String{
+        if(Data.badLog!=null)
+            if(Data.badLog!!.isEmpty())
+                return "Dzięki za skrzynkę!"
+        return Data.badLog?: "Dzięki za skrzynkę!"
+    }
+
+    private fun getGoodLog() : String{
+        if(Data.goodLog!=null)
+            if(Data.goodLog!!.isEmpty())
+                return "Dzięki za skrzynkę!"
+        return Data.goodLog?: "Dzięki za skrzynkę!"
     }
 
     private fun getOP(v : String) : String {

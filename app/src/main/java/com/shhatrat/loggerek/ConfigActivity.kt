@@ -46,6 +46,16 @@ class ConfigActivity : AppCompatActivity() {
             config_hello.text= getString(R.string.no_configured_user)
         }
 
+        et_good.setText(Data.goodLog)
+        et_good.textWatcher {
+            onTextChanged { text, start, before, count -> Data.goodLog = text.toString()  }
+        }
+
+        et_bad.setText(Data.badLog)
+        et_bad.textWatcher {
+            onTextChanged { text, start, before, count -> Data.badLog = text.toString()  }
+        }
+
         et_log.setText(Data.defaultLog)
         et_log.textWatcher {
             onTextChanged { text, start, before, count -> Data.defaultLog = text.toString()  }
