@@ -2,10 +2,12 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Loggerek is App for lazy geocachers :smile:
-Works with opencaching api 
+
+Works with opencaching api:
+https://opencaching.pl/okapi/
 
 # Technologies used
-- Kotlin
+- 100% Kotlin
 - Retrofit2 and OkHttp
 - RxJava2
 - Koin (DI)
