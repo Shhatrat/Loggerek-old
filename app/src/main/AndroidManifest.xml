@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.shhatrat.loggerek">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".Loggerek"
         android:allowBackup="true"
@@ -16,8 +18,38 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".LogActivity"
+            android:theme="@style/Theme.AppCompat.Dialog.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="opencaching.pl" android:path="/viewcache.php" />
+                <data android:scheme="http" android:host="www.opencaching.pl" android:path="/viewcache.php" />
+                <data android:scheme="http" android:host="m.opencaching.pl" android:path="/viewcache.php" />
+                <data android:scheme="http" android:host="opencaching.pl" android:path="/log.php" />
+                <data android:scheme="http" android:host="www.opencaching.pl" android:path="/log.php" />
+                <data android:scheme="http" android:host="m.opencaching.pl" android:path="/log.php" />
+                <data android:scheme="http" android:host="opencaching.us" android:path="/viewcache.php" />
+                <data android:scheme="http" android:host="www.opencaching.us" android:path="/viewcache.php" />
+                <data android:scheme="http" android:host="opencaching.us" android:path="/log.php" />
+                <data android:scheme="http" android:host="www.opencaching.us" android:path="/log.php" />
+                <data android:scheme="http" android:host="opencaching.org.uk" android:path="/viewcache.php" />
+                <data android:scheme="http" android:host="www.opencaching.org.uk" android:path="/viewcache.php" />
+                <data android:scheme="http" android:host="opencaching.org.uk" android:path="/log.php" />
+                <data android:scheme="http" android:host="www.opencaching.org.uk" android:path="/log.php" />
+                <data android:scheme="http" android:host="opencaching.nl" android:path="/viewcache.php" />
+                <data android:scheme="http" android:host="www.opencaching.nl" android:path="/viewcache.php" />
+                <data android:scheme="http" android:host="opencaching.nl" android:path="/log.php" />
+                <data android:scheme="http" android:host="www.opencaching.nl" android:path="/log.php" />
+                <data android:scheme="http" android:host="opencaching.de" android:path="/viewcache.php" />
+                <data android:scheme="http" android:host="www.opencaching.de" android:path="/viewcache.php" />
+                <data android:scheme="http" android:host="opencaching.de" android:path="/log.php" />
+                <data android:scheme="http" android:host="www.opencaching.de" android:path="/log.php" />
             </intent-filter>
         </activity>
     </application>

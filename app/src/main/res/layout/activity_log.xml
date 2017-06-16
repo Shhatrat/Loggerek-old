@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.shhatrat.loggerek.LogActivity">
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabclear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginTop="8dp"
+        app:backgroundTint="@android:color/holo_blue_light"
+        app:layout_constraintTop_toBottomOf="@+id/floatingActionButton2"
+        app:srcCompat="@drawable/ic_tab_white_24dp"
+        tools:layout_editor_absoluteX="172dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginTop="8dp"
+        app:backgroundTint="@android:color/holo_red_dark"
+        app:layout_constraintTop_toBottomOf="@+id/floatingActionButton"
+        app:srcCompat="@drawable/ic_sentiment_very_dissatisfied_white_24dp"
+        tools:layout_editor_absoluteX="172dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@android:color/holo_green_light"
+        app:srcCompat="@drawable/ic_sentiment_very_satisfied_white_24dp"
+        tools:layout_editor_absoluteX="172dp"
+        tools:layout_editor_absoluteY="235dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="168dp"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/fabclear" />
+</android.support.constraint.ConstraintLayout>

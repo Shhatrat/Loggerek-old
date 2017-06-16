@@ -1,6 +1,7 @@
 package com.shhatrat.loggerek
 
 import android.app.getKoin
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -29,6 +30,8 @@ class ConfigActivity : AppCompatActivity() {
         setContentView(R.layout.activity_config)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
+
+        startActivity(Intent(this, LogActivity::class.java))
 
         o = OAuth(getString(R.string.consumer_key), getString(R.string.consumer_secret))
         val ret by lazy {getKoin().get<Api>()}
