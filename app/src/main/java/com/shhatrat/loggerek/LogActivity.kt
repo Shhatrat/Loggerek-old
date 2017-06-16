@@ -4,10 +4,9 @@ import android.app.getKoin
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Toast
 import com.shhatrat.loggerek.api.Api
-import android.text.TextUtils
-import android.util.Log
 
 
 class LogActivity : AppCompatActivity() {

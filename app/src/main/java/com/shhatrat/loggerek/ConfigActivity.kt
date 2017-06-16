@@ -8,10 +8,12 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.InputType
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.afollestad.materialdialogs.MaterialDialog
+import com.pawegio.kandroid.textWatcher
 import com.shhatrat.loggerek.api.Api
 import com.shhatrat.loggerek.api.OAuth
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -31,8 +33,6 @@ class ConfigActivity : AppCompatActivity() {
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        startActivity(Intent(this, LogActivity::class.java))
-
         o = OAuth(getString(R.string.consumer_key), getString(R.string.consumer_secret))
         val ret by lazy {getKoin().get<Api>()}
         preapreFab()
@@ -47,6 +47,11 @@ class ConfigActivity : AppCompatActivity() {
         else
         {
             config_hello.text= getString(R.string.no_configured_user)
+        }
+
+        et_log.setText(Data.defaultLog)
+        et_log.textWatcher {
+            onTextChanged { text, start, before, count -> Data.defaultLog = text.toString()  }
         }
     }
 

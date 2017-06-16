@@ -9,4 +9,5 @@ object Data : KotprefModel(){
     var userName by nullableStringPref()
     var consumerkey by nullableStringPref()
     var consumerSecret by nullableStringPref()
+    var defaultLog by nullableStringPref()
 }

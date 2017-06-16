@@ -52,6 +52,9 @@ dependencies {
     compile 'org.koin:koin-android:0.1.0'
     compile 'com.afollestad.material-dialogs:core:0.9.4.5'
     testCompile 'junit:junit:4.12'
+    compile 'com.pawegio.kandroid:kandroid:0.8.2@aar'
+
+
 }
 repositories {
     mavenCentral()
