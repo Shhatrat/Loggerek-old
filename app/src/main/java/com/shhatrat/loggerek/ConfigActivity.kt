@@ -1,14 +1,11 @@
 package com.shhatrat.loggerek
 
 import android.app.getKoin
-import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.InputType
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -43,7 +40,7 @@ class ConfigActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                         u -> config_hello.text= u.username}, {
-                        e -> Log.d("dddd", e.message)})
+                        e -> Log.e("apiLog", e.message)})
         else
         {
             config_hello.text= getString(R.string.no_configured_user)
@@ -60,11 +57,11 @@ class ConfigActivity : AppCompatActivity() {
     fun preapreFab(){
         if(isUserLogged()) {
             fab.visibility = GONE
-            fabclear.visibility = VISIBLE
+            f_mylog.visibility = VISIBLE
         } else
         {
             fab.visibility = VISIBLE
-            fabclear.visibility = GONE
+            f_mylog.visibility = GONE
         }
 
         fab.setOnClickListener {
@@ -72,7 +69,7 @@ class ConfigActivity : AppCompatActivity() {
             autorization = true
         }
 
-        fabclear.setOnClickListener {
+        f_mylog.setOnClickListener {
             Data.userName = null
             Data.consumerkey = null
             Data.consumerSecret = null
@@ -95,7 +92,7 @@ class ConfigActivity : AppCompatActivity() {
                     .title("Set code")
                     .positiveText("ok")
                     .inputType(InputType.TYPE_CLASS_TEXT)
-                    .input("ddd", " ", MaterialDialog.InputCallback { dialog, input -> finishOAuth(input.toString()) })
+                    .input("", " ", MaterialDialog.InputCallback { dialog, input -> finishOAuth(input.toString()) })
                     .show()
         }
     }
@@ -109,7 +106,7 @@ class ConfigActivity : AppCompatActivity() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
                         u -> config_hello.text= u.username}, {
-                        e -> Log.d("dddd", e.message)})
+                        e -> Log.d("apiLog", e.message)})
         }
     }
 }

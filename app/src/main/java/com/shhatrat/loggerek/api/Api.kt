@@ -1,8 +1,9 @@
 package com.shhatrat.loggerek.api
 
-import com.shhatrat.loggerek.Oo
+import com.shhatrat.loggerek.models.Log
 import com.shhatrat.loggerek.models.User
 import io.reactivex.Observable
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -21,7 +22,8 @@ interface Api {
                 : Observable<Void>
 
     @GET("logs/submit")
-    fun logEntry(@Query("logtype") logtype :String,
+    fun logEntry(@Query("cache_code") cache_code :String,
+                 @Query("logtype") logtype :String,
                  @Query("comment") comment :String)
-                : Observable<Void>
+                : Observable<Response<Log>>
 }
