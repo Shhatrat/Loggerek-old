@@ -7,7 +7,6 @@ import com.chibatching.kotpref.KotprefModel
  */
 object Data : KotprefModel(){
     var userName by nullableStringPref()
-    var age by intPref(default = 14)
     var consumerkey by nullableStringPref()
     var consumerSecret by nullableStringPref()
 }

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.support.v4.content.ContextCompat.startActivity
 import com.shhatrat.loggerek.Data
-import com.shhatrat.loggerek.R
 import oauth.signpost.OAuth
 import oauth.signpost.basic.DefaultOAuthProvider
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
@@ -14,13 +13,14 @@ import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
 /**
  * Created by szymon on 16.06.17.
  */
-class OAuth(context: Context) {
+class OAuth(val consumer_key : String , val consumer_secret : String){
 
     var provider = DefaultOAuthProvider(
             "https://opencaching.pl/okapi/services/oauth/request_token",
             "https://opencaching.pl/okapi/services/oauth/access_token",
             "https://opencaching.pl/okapi/services/oauth/access_token")
-    var consu = OkHttpOAuthConsumer(context.getString(R.string.consumer_key), context.getString(R.string.consumer_secret))
+
+    var consu : OkHttpOAuthConsumer = OkHttpOAuthConsumer(consumer_key, consumer_secret)
 
     fun prepareOAuth(c : Context) {
         provider.retrieveRequestToken(consu, OAuth.OUT_OF_BAND)
