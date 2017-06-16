@@ -1,7 +1,6 @@
 package com.shhatrat.loggerek.di
 
-import com.shhatrat.loggerek.Data
-import com.shhatrat.loggerek.R
+import com.shhatrat.loggerek.models.Data
 import com.shhatrat.loggerek.R.string.consumer_key
 import com.shhatrat.loggerek.R.string.consumer_secret
 import com.shhatrat.loggerek.api.Api

@@ -1,49 +1,40 @@
-package com.shhatrat.loggerek
+package com.shhatrat.loggerek.activities
 
 import android.app.getKoin
-import android.os.AsyncTask
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
-import android.text.InputType
-import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import com.afollestad.materialdialogs.MaterialDialog
 import com.pawegio.kandroid.textWatcher
-import com.shhatrat.loggerek.api.Api
-import com.shhatrat.loggerek.api.OAuth
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.shhatrat.loggerek.R
+import com.shhatrat.loggerek.models.Data
 import kotlinx.android.synthetic.main.activity_config.*
 import kotlinx.android.synthetic.main.content_config.*
 
 
-class ConfigActivity : AppCompatActivity() {
+class ConfigActivity : android.support.v7.app.AppCompatActivity() {
 
     var autorization = false
-    var o : OAuth? = null
+    var o : com.shhatrat.loggerek.api.OAuth? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_config)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        setContentView(com.shhatrat.loggerek.R.layout.activity_config)
+        val toolbar = findViewById(com.shhatrat.loggerek.R.id.toolbar) as android.support.v7.widget.Toolbar
         setSupportActionBar(toolbar)
 
-        o = OAuth(getString(R.string.consumer_key), getString(R.string.consumer_secret))
-        val ret by lazy {getKoin().get<Api>()}
+        o = com.shhatrat.loggerek.api.OAuth(getString(R.string.consumer_key), getString(R.string.consumer_secret))
+        val ret by lazy {getKoin().get<com.shhatrat.loggerek.api.Api>()}
         preapreFab()
 
         if(isUserLogged())
             ret.getUsername()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
+                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                 .subscribe({
                         u -> config_hello.text= u.username}, {
-                        e -> Log.e("apiLog", e.message)})
+                        e -> android.util.Log.e("apiLog", e.message)})
         else
         {
-            config_hello.text= getString(R.string.no_configured_user)
+            config_hello.text= getString(com.shhatrat.loggerek.R.string.no_configured_user)
         }
 
         et_good.setText(Data.goodLog)
@@ -62,7 +53,7 @@ class ConfigActivity : AppCompatActivity() {
         }
     }
 
-    fun isUserLogged(): Boolean = Data.consumerkey!=null
+    fun isUserLogged(): Boolean = Data.consumerkey !=null
 
     fun preapreFab(){
         if(isUserLogged()) {
@@ -83,13 +74,13 @@ class ConfigActivity : AppCompatActivity() {
             Data.userName = null
             Data.consumerkey = null
             Data.consumerSecret = null
-            config_hello.text  = getString(R.string.no_configured_user)
+            config_hello.text  = getString(com.shhatrat.loggerek.R.string.no_configured_user)
             preapreFab()
         }
     }
 
     fun logUser() {
-            AsyncTask.execute {
+            android.os.AsyncTask.execute {
                 o!!.prepareOAuth(this)
             }
     }
@@ -98,25 +89,25 @@ class ConfigActivity : AppCompatActivity() {
         super.onResume()
         if(autorization) {
             autorization = false
-           MaterialDialog.Builder(this)
+           com.afollestad.materialdialogs.MaterialDialog.Builder(this)
                     .title("Set code")
                     .positiveText("ok")
-                    .inputType(InputType.TYPE_CLASS_TEXT)
-                    .input("", " ", MaterialDialog.InputCallback { dialog, input -> finishOAuth(input.toString()) })
+                    .inputType(android.text.InputType.TYPE_CLASS_TEXT)
+                    .input("", " ", com.afollestad.materialdialogs.MaterialDialog.InputCallback { dialog, input -> finishOAuth(input.toString()) })
                     .show()
         }
     }
 
     fun finishOAuth(dat : String) {
-        AsyncTask.execute {
+        android.os.AsyncTask.execute {
             o!!.okHttpPin(dat)
-            val ret by lazy {getKoin().get<Api>()}
+            val ret by lazy {getKoin().get<com.shhatrat.loggerek.api.Api>()}
             ret.getUsername()
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
+                    .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                     .subscribe({
                         u -> config_hello.text= u.username}, {
-                        e -> Log.d("apiLog", e.message)})
+                        e -> android.util.Log.d("apiLog", e.message)})
         }
     }
 }

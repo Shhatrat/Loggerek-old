@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.support.v4.content.ContextCompat.startActivity
-import com.shhatrat.loggerek.Data
+import com.shhatrat.loggerek.models.Data
 import oauth.signpost.OAuth
 import oauth.signpost.basic.DefaultOAuthProvider
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer

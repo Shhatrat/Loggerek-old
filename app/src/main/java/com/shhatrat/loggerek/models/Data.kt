@@ -1,4 +1,4 @@
-package com.shhatrat.loggerek
+package com.shhatrat.loggerek.models
 
 import com.chibatching.kotpref.KotprefModel
 

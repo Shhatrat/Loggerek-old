@@ -1,4 +1,4 @@
-package com.shhatrat.loggerek
+package com.shhatrat.loggerek.activities
 
 import android.app.getKoin
 import android.content.Intent
@@ -9,6 +9,8 @@ import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
+import com.shhatrat.loggerek.models.Data
+import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
 import de.mateware.snacky.Snacky
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -92,24 +94,24 @@ class LogActivity : AppCompatActivity() {
     }
 
     private fun getDefaultLog() : String{
-        if(Data.defaultLog!=null)
+        if(Data.defaultLog !=null)
         if(Data.defaultLog!!.isEmpty())
             return "Dzięki za skrzynkę!"
-        return Data.defaultLog?: "Dzięki za skrzynkę!"
+        return Data.defaultLog ?: "Dzięki za skrzynkę!"
     }
 
     private fun getBadLog() : String{
-        if(Data.badLog!=null)
+        if(Data.badLog !=null)
             if(Data.badLog!!.isEmpty())
                 return "Dzięki za skrzynkę!"
-        return Data.badLog?: "Dzięki za skrzynkę!"
+        return Data.badLog ?: "Dzięki za skrzynkę!"
     }
 
     private fun getGoodLog() : String{
-        if(Data.goodLog!=null)
+        if(Data.goodLog !=null)
             if(Data.goodLog!!.isEmpty())
                 return "Dzięki za skrzynkę!"
-        return Data.goodLog?: "Dzięki za skrzynkę!"
+        return Data.goodLog ?: "Dzięki za skrzynkę!"
     }
 
     private fun getOP(v : String) : String {
