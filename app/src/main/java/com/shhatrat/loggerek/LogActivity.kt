@@ -55,15 +55,20 @@ class LogActivity : AppCompatActivity() {
     }
 
     fun success(u: com.shhatrat.loggerek.models.Log) {
-       val sn = Snacky.builder().setActivty(this).setText(u.message).setDuration(2000).info()
+        var sn = Snacky.builder().setActivty(this).setText(u.message).setDuration(2000)
+        if(u.success)
+            sn.success()
+        else
+            sn.error()
+        var oo = sn.build()
         f_progress.visibility = GONE
-        sn.addCallback(object : Snackbar.Callback(){
+        oo.addCallback(object : Snackbar.Callback(){
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 finish()
             }
         })
-        sn.show()
+        oo.show()
 
     }
 
