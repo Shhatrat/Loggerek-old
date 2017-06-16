@@ -16,7 +16,7 @@ https://opencaching.pl/okapi/
 # Usage (for developers)
 If you want build this app you have to add keys, you can genereate it here:
 https://opencaching.pl/okapi/signup.html
-- opencaching key in [api_keys.xml](../master/app/src/main/res/values/strings.xml) file
+- opencaching key in [strings.xml](../master/app/src/main/res/values/strings.xml) file
 
 ```
     <string name="consumer_key">set_your_key</string>
