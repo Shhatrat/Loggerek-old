@@ -18,14 +18,12 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log.*
 
 
-class LogActivity : AppCompatActivity() {
+class LogActivity : AbstractActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log)
         getWindow().getDecorView().setBackgroundResource(android.R.color.transparent)
-
-
 
         checkConfiguration()
         checkIntent()
@@ -117,22 +115,5 @@ class LogActivity : AppCompatActivity() {
     private fun getOP(v : String) : String {
         val o = v.lastIndexOf("OP")
         return v.substring(o, v.length)
-    }
-
-    private fun checkIntent() {
-        val intent = intent
-        if (intent != null) {
-            val uri = intent.data
-            if (uri == null) {
-                finish()
-            }
-        }else finish()
-    }
-
-    private fun checkConfiguration() {
-        if (Data.consumerkey == null) {
-            Toast.makeText(this, "No configured user", 1000).show()
-            startActivity(Intent(this, ConfigActivity::class.java))
-        }
     }
 }
