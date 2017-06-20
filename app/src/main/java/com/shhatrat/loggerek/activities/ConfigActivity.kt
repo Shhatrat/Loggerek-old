@@ -1,6 +1,7 @@
 package com.shhatrat.loggerek.activities
 
 import android.app.getKoin
+import android.content.Intent
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.pawegio.kandroid.textWatcher
@@ -20,6 +21,9 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
         setContentView(com.shhatrat.loggerek.R.layout.activity_config)
         val toolbar = findViewById(com.shhatrat.loggerek.R.id.toolbar) as android.support.v7.widget.Toolbar
         setSupportActionBar(toolbar)
+
+        if(!isViewed())
+        startActivity(Intent(this, IntroActivity::class.java))
 
         o = com.shhatrat.loggerek.api.OAuth(getString(R.string.consumer_key), getString(R.string.consumer_secret))
         val ret by lazy {getKoin().get<com.shhatrat.loggerek.api.Api>()}
@@ -52,6 +56,8 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
             onTextChanged { text, start, before, count -> Data.defaultLog = text.toString()  }
         }
     }
+
+    fun  isViewed(): Boolean = Data.introViewed
 
     fun isUserLogged(): Boolean = Data.consumerkey !=null
 

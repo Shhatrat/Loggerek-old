@@ -12,4 +12,5 @@ object Data : KotprefModel(){
     var defaultLog by nullableStringPref()
     var goodLog by nullableStringPref()
     var badLog by nullableStringPref()
+    var introViewed by booleanPref(false)
 }
