@@ -111,9 +111,4 @@ class LogActivity : AbstractActivity() {
                 return "Dzięki za skrzynkę!"
         return Data.goodLog ?: "Dzięki za skrzynkę!"
     }
-
-    private fun getOP(v : String) : String {
-        val o = v.lastIndexOf("OP")
-        return v.substring(o, v.length)
-    }
 }

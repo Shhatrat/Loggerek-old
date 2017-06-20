@@ -25,6 +25,8 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
         if(!isViewed())
         startActivity(Intent(this, IntroActivity::class.java))
 
+
+        preapreDrawer()
         o = com.shhatrat.loggerek.api.OAuth(getString(R.string.consumer_key), getString(R.string.consumer_secret))
         val ret by lazy {getKoin().get<com.shhatrat.loggerek.api.Api>()}
         preapreFab()
@@ -102,6 +104,16 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                     .input("", " ", com.afollestad.materialdialogs.MaterialDialog.InputCallback { dialog, input -> finishOAuth(input.toString()) })
                     .show()
         }
+    }
+
+    fun preapreDrawer(){
+//    drawer {
+//        primaryItem("Home") {}
+//        divider {}
+//        primaryItem("Users") {}
+//        secondaryItem("Settings") {}
+//    }
+
     }
 
     fun finishOAuth(dat : String) {

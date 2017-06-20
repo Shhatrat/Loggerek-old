@@ -1,6 +1,7 @@
 package com.shhatrat.loggerek.api
 
 import com.shhatrat.loggerek.models.Log
+import com.shhatrat.loggerek.models.NoteResponse
 import com.shhatrat.loggerek.models.User
 import io.reactivex.Observable
 import retrofit2.Response
@@ -19,7 +20,7 @@ interface Api {
     @GET("caches/save_personal_notes")
     fun saveNote(@Query("cache_code") code : String,
                  @Query("new_value") note : String)
-                : Observable<Void>
+                : Observable<NoteResponse>
 
     @GET("logs/submit")
     fun logEntry(@Query("cache_code") cache_code :String,

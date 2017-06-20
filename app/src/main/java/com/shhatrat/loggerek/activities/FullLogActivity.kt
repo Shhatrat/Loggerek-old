@@ -11,6 +11,5 @@ class FullLogActivity : AbstractActivity() {
 
         checkConfiguration()
         checkIntent()
-
     }
 }
