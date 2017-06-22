@@ -2,13 +2,25 @@ package com.shhatrat.loggerek.activities
 
 import android.app.getKoin
 import android.content.Intent
+import android.graphics.Color
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.Toolbar
+import co.zsmb.materialdrawerkt.builders.accountHeader
+import co.zsmb.materialdrawerkt.builders.drawer
+import co.zsmb.materialdrawerkt.builders.footer
+import co.zsmb.materialdrawerkt.draweritems.badge
+import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
+import co.zsmb.materialdrawerkt.draweritems.badgeable.secondaryItem
+import co.zsmb.materialdrawerkt.draweritems.divider
+import co.zsmb.materialdrawerkt.draweritems.profile.profile
+import co.zsmb.materialdrawerkt.draweritems.profile.profileSetting
 import com.pawegio.kandroid.textWatcher
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.models.Data
 import kotlinx.android.synthetic.main.activity_config.*
 import kotlinx.android.synthetic.main.content_config.*
+import me.zhanghai.android.materialprogressbar.R.attr.background
 
 
 class ConfigActivity : android.support.v7.app.AppCompatActivity() {
@@ -107,14 +119,49 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
     }
 
     fun preapreDrawer(){
-//    drawer {
-//        primaryItem("Home") {}
-//        divider {}
-//        primaryItem("Users") {}
-//        secondaryItem("Settings") {}
-//    }
+        drawer {
 
+            toolbar = this@ConfigActivity.toolbar
+            accountHeader {
+                background = R.color.primary
+                translucentStatusBar = true
+
+                profile("dd", "oo"){
+                    icon = R.mipmap.ic_launcher
+                    identifier = 100
+                }
+            }
+            primaryItem("Unsend") {
+                icon = R.drawable.ic_clear_white_24dp
+                badge("100") {
+                    textColor = Color.WHITE.toLong()
+                    colorRes = R.color.md_red_700
+                }
+            }
+            divider{}
+            primaryItem("Good") {
+                icon = R.drawable.ic_sentiment_very_satisfied_white_24dp
+            }
+            primaryItem("Bad") {
+                icon = R.drawable.ic_sentiment_very_dissatisfied_white_24dp
+            }
+            primaryItem("Default") {
+                icon = R.drawable.ic_tab_white_24dp
+            }
+
+            footer {
+                primaryItem("Settings") {
+                    icon = R.drawable.ic_settings_white_24dp
+                }
+                primaryItem("Logout") {
+                    icon = R.drawable.ic_exit_to_app_white_24dp
+
+                }
+            }
+
+        }
     }
+
 
     fun finishOAuth(dat : String) {
         android.os.AsyncTask.execute {

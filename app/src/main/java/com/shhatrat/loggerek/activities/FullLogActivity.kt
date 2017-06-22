@@ -8,8 +8,5 @@ class FullLogActivity : AbstractActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_full_log)
-
-        checkConfiguration()
-        checkIntent()
     }
 }

@@ -2,9 +2,7 @@ package com.shhatrat.loggerek.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.widget.Toast
 import com.shhatrat.loggerek.models.Data
 
@@ -13,6 +11,11 @@ import com.shhatrat.loggerek.models.Data
  */
 abstract  class AbstractActivity : AppCompatActivity() {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        checkConfiguration()
+        checkIntent()
+    }
 
     fun AppCompatActivity.checkIntent() {
         val intent = intent
