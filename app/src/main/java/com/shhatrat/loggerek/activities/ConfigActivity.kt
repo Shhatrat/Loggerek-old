@@ -119,7 +119,10 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                         ProfileDrawerItem().withName("test").withIcon(R.mipmap.ic_launcher)
                 ).build()
 
-        DrawerBuilder().withAccountHeader(header)
+        DrawerBuilder()
+                .withActivity(this@ConfigActivity)
+                .withToolbar(this@ConfigActivity.toolbar)
+                .withAccountHeader(header)
                 .addDrawerItems(
                         PrimaryDrawerItem().withName("Unsend").withIcon(R.drawable.ic_clear_white_24dp),
                         DividerDrawerItem(),
