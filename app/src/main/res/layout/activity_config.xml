@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:background="@color/colorPrimaryDark"
     android:layout_height="match_parent"
-    tools:context="com.shhatrat.loggerek.ConfigActivity">
+    tools:context="com.shhatrat.loggerek.activities.ConfigActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -30,13 +30,5 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_add_white_24dp" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/f_mylog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_clear_white_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -9,11 +9,10 @@ import com.mikepenz.materialdrawer.DrawerBuilder
 import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
-import com.pawegio.kandroid.textWatcher
 import com.shhatrat.loggerek.R
+import com.shhatrat.loggerek.fragments.StatusFragment
 import com.shhatrat.loggerek.models.Data
 import kotlinx.android.synthetic.main.activity_config.*
-import kotlinx.android.synthetic.main.content_config.*
 
 
 class ConfigActivity : android.support.v7.app.AppCompatActivity() {
@@ -30,38 +29,46 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
         if(!isViewed())
         startActivity(Intent(this, IntroActivity::class.java))
 
-
-        preapreDrawer()
         o = com.shhatrat.loggerek.api.OAuth(getString(R.string.consumer_key), getString(R.string.consumer_secret))
-        val ret by lazy {getKoin().get<com.shhatrat.loggerek.api.Api>()}
+
         preapreFab()
+        preapreDrawer()
 
-        if(isUserLogged())
-            ret.getUsername()
-                .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
-                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
-                .subscribe({
-                        u -> config_hello.text= u.username}, {
-                        e -> android.util.Log.e("apiLog", e.message)})
-        else
-        {
-            config_hello.text= getString(com.shhatrat.loggerek.R.string.no_configured_user)
-        }
 
-        et_good.setText(Data.goodLog)
-        et_good.textWatcher {
-            onTextChanged { text, start, before, count -> Data.goodLog = text.toString()  }
-        }
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.frame, StatusFragment.getInstance(), "dd")
+        transaction.commit()
 
-        et_bad.setText(Data.badLog)
-        et_bad.textWatcher {
-            onTextChanged { text, start, before, count -> Data.badLog = text.toString()  }
-        }
 
-        et_log.setText(Data.defaultLog)
-        et_log.textWatcher {
-            onTextChanged { text, start, before, count -> Data.defaultLog = text.toString()  }
-        }
+//        val ret by lazy {getKoin().get<com.shhatrat.loggerek.api.Api>()}
+//        preapreFab()
+//
+//        if(isUserLogged())
+//            ret.getUsername()
+//                .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
+//                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+//                .subscribe({
+//                        u -> config_hello.text= u.username}, {
+//                        e -> android.util.Log.e("apiLog", e.message)})
+//        else
+//        {
+//            config_hello.text= getString(com.shhatrat.loggerek.R.string.no_configured_user)
+//        }
+//
+//        et_good.setText(Data.goodLog)
+//        et_good.textWatcher {
+//            onTextChanged { text, start, before, count -> Data.goodLog = text.toString()  }
+//        }
+//
+//        et_bad.setText(Data.badLog)
+//        et_bad.textWatcher {
+//            onTextChanged { text, start, before, count -> Data.badLog = text.toString()  }
+//        }
+//
+//        et_log.setText(Data.defaultLog)
+//        et_log.textWatcher {
+//            onTextChanged { text, start, before, count -> Data.defaultLog = text.toString()  }
+//        }
     }
 
     fun  isViewed(): Boolean = Data.introViewed
@@ -69,26 +76,14 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
     fun isUserLogged(): Boolean = Data.consumerkey !=null
 
     fun preapreFab(){
-        if(isUserLogged()) {
+        if(isUserLogged())
             fab.visibility = GONE
-            f_mylog.visibility = VISIBLE
-        } else
-        {
+        else
             fab.visibility = VISIBLE
-            f_mylog.visibility = GONE
-        }
 
         fab.setOnClickListener {
             logUser()
             autorization = true
-        }
-
-        f_mylog.setOnClickListener {
-            Data.userName = null
-            Data.consumerkey = null
-            Data.consumerSecret = null
-            config_hello.text  = getString(com.shhatrat.loggerek.R.string.no_configured_user)
-            preapreFab()
         }
     }
 
@@ -116,7 +111,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
         var header = AccountHeaderBuilder()
                 .withActivity(this@ConfigActivity)
                 .addProfiles(
-                        ProfileDrawerItem().withName("test").withIcon(R.mipmap.ic_launcher)
+                        ProfileDrawerItem().withName("test").withIcon(R.drawable.logo_oc)
                 ).build()
 
         DrawerBuilder()
@@ -124,6 +119,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                 .withToolbar(this@ConfigActivity.toolbar)
                 .withAccountHeader(header)
                 .addDrawerItems(
+                        PrimaryDrawerItem().withName("Status").withIcon(R.drawable.ic_sentiment_very_satisfied_white_24dp),
                         PrimaryDrawerItem().withName("Unsend").withIcon(R.drawable.ic_clear_white_24dp),
                         DividerDrawerItem(),
                         PrimaryDrawerItem().withName("Good").withIcon(R.drawable.ic_sentiment_very_satisfied_white_24dp),
@@ -132,7 +128,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                         )
                 .addStickyDrawerItems(
                         PrimaryDrawerItem().withName("Settings").withIcon(R.drawable.ic_settings_white_24dp),
-                        PrimaryDrawerItem().withName("Settings").withIcon(R.drawable.ic_exit_to_app_white_24dp))
+                        PrimaryDrawerItem().withName("Logout").withIcon(R.drawable.ic_exit_to_app_white_24dp))
                 .build()
     }
 
@@ -145,8 +141,14 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                     .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
                     .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                     .subscribe({
-                        u -> config_hello.text= u.username}, {
+                        u ->
+                        run {
+                            Data.userName = u.username
+                            preapreFab()
+                        }
+                    }, {
                         e -> android.util.Log.d("apiLog", e.message)})
+
         }
     }
 }

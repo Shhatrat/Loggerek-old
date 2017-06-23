@@ -21,4 +21,10 @@ class StatusFragment : Fragment() {
         return inflater!!.inflate(R.layout.fragment_status, container, false)
     }
 
+    companion object{
+        fun getInstance() : StatusFragment {
+            return StatusFragment()
+        }
+    }
+
 }
