@@ -13,8 +13,9 @@ import retrofit2.http.Query
  */
 interface Api {
 
-    @GET("users/user?fields=username")
-    fun getUsername()
+    @GET("users/user")
+    fun getUsername(
+            @Query("fields", encoded = true) fields : String)
                 :Observable<User>
 
     @GET("caches/save_personal_notes")

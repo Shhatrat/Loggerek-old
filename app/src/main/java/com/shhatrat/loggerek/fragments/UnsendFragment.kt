@@ -20,5 +20,9 @@ class UnsendFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         return inflater!!.inflate(R.layout.fragment_unsend, container, false)
     }
-
+    companion object{
+        fun getInstance() : UnsendFragment {
+            return UnsendFragment()
+        }
+    }
 }
