@@ -31,6 +31,7 @@ abstract  class AbstractActivity : AppCompatActivity() {
         if (Data.consumerkey == null) {
             Toast.makeText(this, "No configured user", 1000).show()
             startActivity(Intent(this, ConfigActivity::class.java))
+            finish()
         }
     }
 
