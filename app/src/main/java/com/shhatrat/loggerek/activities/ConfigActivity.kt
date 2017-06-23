@@ -3,10 +3,11 @@ package com.shhatrat.loggerek.activities
 import android.app.getKoin
 import android.content.Intent
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
+import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.DrawerBuilder
 import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
@@ -30,6 +31,10 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
     val parameters = "username|caches_found|caches_notfound|caches_hidden|profile_url|home_location"
     val ret by lazy {getKoin().get<com.shhatrat.loggerek.api.Api>()}
     val realm by lazy{getKoin().get<Realm>()}
+
+    lateinit  var header : AccountHeader
+    lateinit  var drawer : Drawer
+
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.shhatrat.loggerek.R.layout.activity_config)
@@ -46,6 +51,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
 
         if(isUserLogged()) {
             changeFragment(StatusFragment.getInstance())
+            preapreHeader()
         }
     }
 
@@ -84,15 +90,16 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
         }
     }
 
+    fun preapreHeader(){
+        header.addProfile(ProfileDrawerItem().withName(realm.where(User::class.java).findFirst().username).withIcon(R.drawable.logo_oc), 0)
+    }
+
     fun preapreDrawer(){
-
-        var header = AccountHeaderBuilder()
+        header = AccountHeaderBuilder()
                 .withActivity(this@ConfigActivity)
-                .addProfiles(
-                        ProfileDrawerItem().withName("test").withIcon(R.drawable.logo_oc)
-                ).build()
+                .build()
 
-        DrawerBuilder()
+        drawer = DrawerBuilder()
                 .withActivity(this@ConfigActivity)
                 .withToolbar(this@ConfigActivity.toolbar)
                 .withAccountHeader(header)
@@ -154,6 +161,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                         run {
                             realm.addUser(u)
                             preapreFab()
+                            preapreHeader()
                             changeFragment(StatusFragment.getInstance())
                         }
                     }, {
@@ -170,6 +178,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.remove(supportFragmentManager.fragments.get(0))
         transaction.commit()
+        header.removeProfile(0)
     }
 
 

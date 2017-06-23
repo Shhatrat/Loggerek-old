@@ -6,9 +6,6 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.shhatrat.loggerek.models.Data
 
-/**
- * Created by szymon on 17.06.17.
- */
 abstract  class AbstractActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
