@@ -3,8 +3,7 @@ package com.shhatrat.loggerek.activities
 import android.app.getKoin
 import android.content.Intent
 import android.support.v4.app.Fragment
-import android.util.Log
-import android.view.MotionEvent
+import android.support.v4.app.FragmentManager
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -17,9 +16,10 @@ import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.fragments.StatusFragment
 import com.shhatrat.loggerek.fragments.UnsendFragment
 import com.shhatrat.loggerek.models.Data
+import com.shhatrat.loggerek.models.User
+import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_config.*
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
-import com.shhatrat.loggerek.Loggerek
 import java.net.URLEncoder
 
 
@@ -28,7 +28,8 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
     var autorization = false
     var o : com.shhatrat.loggerek.api.OAuth? = null
     val parameters = "username|caches_found|caches_notfound|caches_hidden|profile_url|home_location"
-
+    val ret by lazy {getKoin().get<com.shhatrat.loggerek.api.Api>()}
+    val realm by lazy{getKoin().get<Realm>()}
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.shhatrat.loggerek.R.layout.activity_config)
@@ -45,44 +46,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
 
         if(isUserLogged()) {
             changeFragment(StatusFragment.getInstance())
-            user()
         }
-
-
-//        val transaction = supportFragmentManager.beginTransaction()
-//        transaction.add(R.id.frame, StatusFragment.getInstance(), "dd")
-//        transaction.commit()
-
-
-//        val ret by lazy {getKoin().get<com.shhatrat.loggerek.api.Api>()}
-//        preapreFab()
-//
-//        if(isUserLogged())
-//            ret.getUsername()
-//                .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
-//                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
-//                .subscribe({
-//                        u -> config_hello.text= u.username}, {
-//                        e -> android.util.Log.e("apiLog", e.message)})
-//        else
-//        {
-//            config_hello.text= getString(com.shhatrat.loggerek.R.string.no_configured_user)
-//        }
-//
-//        et_good.setText(Data.goodLog)
-//        et_good.textWatcher {
-//            onTextChanged { text, start, before, count -> Data.goodLog = text.toString()  }
-//        }
-//
-//        et_bad.setText(Data.badLog)
-//        et_bad.textWatcher {
-//            onTextChanged { text, start, before, count -> Data.badLog = text.toString()  }
-//        }
-//
-//        et_log.setText(Data.defaultLog)
-//        et_log.textWatcher {
-//            onTextChanged { text, start, before, count -> Data.defaultLog = text.toString()  }
-//        }
     }
 
     fun  isViewed(): Boolean = Data.introViewed
@@ -156,6 +120,8 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                     changeFragment(StatusFragment.getInstance())
                 if(drawerItem!!.tag == "Unsend")
                     changeFragment(UnsendFragment.getInstance())
+                if(drawerItem!!.tag == "Logout")
+                    logout()
             }
         return false
     }
@@ -177,34 +143,16 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                 .show()
     }
 
-    fun user(){
-        val ret by lazy {getKoin().get<com.shhatrat.loggerek.api.Api>()}
-        ret.getUsername(parameters.getUTF8String())
-                .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
-                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
-                .subscribe({
-                    u ->
-                    run {
-                        Data.userName = u.username
-                        preapreFab()
-                        changeFragment(StatusFragment.getInstance())
-                    }
-                }, {
-                    e -> android.util.Log.d("apiLog", e.message)})
-
-    }
-
     fun finishOAuth(dat : String) {
         android.os.AsyncTask.execute {
             o!!.okHttpPin(dat)
-            val ret by lazy {getKoin().get<com.shhatrat.loggerek.api.Api>()}
             ret.getUsername(parameters.getUTF8String())
                     .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
                     .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                     .subscribe({
                         u ->
                         run {
-                            Data.userName = u.username
+                            realm.addUser(u)
                             preapreFab()
                             changeFragment(StatusFragment.getInstance())
                         }
@@ -215,5 +163,26 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
     }
 
 
+    fun logout(){
+        realm.deteleAllWithoutMagic()
+        Data.clear()
+        preapreFab()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.remove(supportFragmentManager.fragments.get(0))
+        transaction.commit()
+    }
+
+
     fun String.getUTF8String() :String = URLEncoder.encode(this, "UTF-8")
+}
+private fun  Realm.addUser(u: User) {
+    this.beginTransaction()
+    this.copyToRealmOrUpdate(u)
+    this.commitTransaction()
+}
+
+private fun  Realm.deteleAllWithoutMagic() {
+    this.beginTransaction()
+    this.deleteAll()
+    this.commitTransaction()
 }

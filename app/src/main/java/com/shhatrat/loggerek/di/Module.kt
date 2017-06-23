@@ -1,9 +1,12 @@
 package com.shhatrat.loggerek.di
 
-import com.shhatrat.loggerek.models.Data
+import android.content.Context
 import com.shhatrat.loggerek.R.string.consumer_key
 import com.shhatrat.loggerek.R.string.consumer_secret
 import com.shhatrat.loggerek.api.Api
+import com.shhatrat.loggerek.models.Data
+import io.realm.Realm
+import io.realm.RealmConfiguration
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.AndroidModule
@@ -24,9 +27,14 @@ class Module : AndroidModule(){
                 provide { createClient(get(),get())}
                 provide { retrofit(get()) }
                 provide { ocApi(get()) }
+                provide { realm()}
             }
     }
 
+    fun realm() : Realm{
+            val config = RealmConfiguration.Builder().build()
+            return Realm.getInstance(config)
+    }
 
     fun createLoggingIntercpetor(): HttpLoggingInterceptor {
         val httplogin = HttpLoggingInterceptor()
