@@ -16,4 +16,7 @@
     <string name="cancel">cancel</string>
     <string name="add_note_to_cache">Add note to cache</string>
     <string name="send">send</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
