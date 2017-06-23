@@ -4,13 +4,12 @@ package com.shhatrat.loggerek.fragments
 import android.app.getKoin
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.models.User
+import com.squareup.picasso.Picasso
 import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_status.*
 
@@ -32,10 +31,22 @@ class StatusFragment : Fragment() {
 
         val user = realm.where(User::class.java).findFirst()
         status_nick.text =  user.username
-        status_content.text = user.home_location?:"u"
+//        status_content.text = user.home_location?:"u"
         status_n_found.text = user.caches_found.toString()?:"u"
         status_n_hidden.text = user.caches_hidden.toString()?:"u"
         status_n_unfound.text = user.caches_notfound.toString()?:"u"
+        Picasso.with(this.context).load(preapreGoogleMapsLink(user.home_location)).into(ppppp)
+
+    }
+
+    fun  preapreGoogleMapsLink(home_location: String?): String{
+        val first = "https://maps.googleapis.com/maps/api/staticmap?center="
+        val second = "&zoom=13&size=600x300&maptype=roadmap&key="
+        val key = getString(R.string.google_maps_key)
+        if(!home_location.isNullOrBlank())
+            return "$first${home_location!!.replace("|", ",")}$second$key"
+        else
+            return "${first}51.743792, 19.450380&zoom=6&size=600x300&maptype=roadmap&key=$key"
     }
 
     companion object{
