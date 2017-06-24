@@ -1,5 +1,7 @@
 # Loggerek
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)    
+
+[![BuddyBuild](https://dashboard.buddybuild.com/api/statusImage?appID=594e77e516479d00017a517a&branch=master&build=latest)](https://dashboard.buddybuild.com/apps/594e77e516479d00017a517a/build/latest?branch=master)
 
 Loggerek is App for lazy geocachers :smile:
 
