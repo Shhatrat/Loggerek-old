@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
+import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.models.Data
 
 abstract  class AbstractActivity : AppCompatActivity() {
@@ -26,7 +27,7 @@ abstract  class AbstractActivity : AppCompatActivity() {
 
     fun checkConfiguration() {
         if (Data.consumerkey == null) {
-            Toast.makeText(this, "No configured user", 1000).show()
+            Toast.makeText(this, getString(R.string.no_configured_user), 1000).show()
             startActivity(Intent(this, ConfigActivity::class.java))
             finish()
         }

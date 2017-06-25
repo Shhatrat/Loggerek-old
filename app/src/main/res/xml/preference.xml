@@ -1,0 +1,68 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <PreferenceCategory
+        android:title="Quick Log">
+        <CheckBoxPreference
+            android:key="quick_save"
+            android:summary="if no Internet connection"
+            android:title="Save log"
+            app:defaultValue="true"
+            app:key="quick_save" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Normal Log">
+        <CheckBoxPreference
+            android:key="normal_save_password"
+            android:summary="to note"
+            android:title="Save password"
+            app:defaultValue="true"
+            app:key="normal_save_password" />
+
+        <CheckBoxPreference
+            android:key="normal_save"
+            android:summary="if no Internet connection"
+            android:title="Save log"
+            app:defaultValue="true"
+            app:key="normal_save" />
+    </PreferenceCategory>
+    <PreferenceCategory
+
+        android:title="Mixing">
+
+        <CheckBoxPreference
+            android:key="mix_good"
+            android:summary="if is set more than 1"
+            android:title="Mix good log" />
+
+        <CheckBoxPreference
+            android:key="mix_bad"
+            android:summary="if is set more than 1"
+            android:title="Mix bad log"/>
+
+        <CheckBoxPreference
+            android:key="mix_default"
+            android:summary=" if is set more than 1"
+            android:title="Mix default log"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Selecting">
+
+        <CheckBoxPreference
+            android:key="random_good"
+            android:title="Select random good log"
+            android:summary="if is set more than 1"/>
+
+        <CheckBoxPreference
+            android:key="random_bad"
+            android:title="Select random bad log"
+            android:summary="if is set more than 1"/>
+
+        <CheckBoxPreference
+            android:key="random_default"
+            android:title="Select random default log"
+            android:summary="if is set more than 1"/>
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -3,6 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.my</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -11,6 +12,11 @@
         <item name="material_drawer_selected">@color/colorAccent</item>
         <item name="material_drawer_secondary_text">@color/md_white_1000</item>
         <item name="material_drawer_selected_text">@color/md_white_1000</item>
+    </style>
+
+    <style name="PreferenceThemeOverlay.my"
+        parent="PreferenceThemeOverlay">
+        <item name="android:background">@color/md_white_1000</item>
     </style>
 
     <style name="Theme.AppCompat.Dialog.NoActionBar" parent="Base.Theme.AppCompat.Dialog">

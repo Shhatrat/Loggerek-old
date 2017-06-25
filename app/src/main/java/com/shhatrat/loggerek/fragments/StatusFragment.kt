@@ -1,6 +1,5 @@
 package com.shhatrat.loggerek.fragments
 
-
 import android.app.getKoin
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,10 +12,6 @@ import com.squareup.picasso.Picasso
 import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_status.*
 
-
-/**
- * A simple [Fragment] subclass.
- */
 class StatusFragment : Fragment() {
 
     val realm by lazy{activity.getKoin().get<Realm>()}
@@ -31,12 +26,10 @@ class StatusFragment : Fragment() {
 
         val user = realm.where(User::class.java).findFirst()
         status_nick.text =  user.username
-//        status_content.text = user.home_location?:"u"
-        status_n_found.text = user.caches_found.toString()?:"u"
-        status_n_hidden.text = user.caches_hidden.toString()?:"u"
-        status_n_unfound.text = user.caches_notfound.toString()?:"u"
+        status_n_found.text = user.caches_found.toString()
+        status_n_hidden.text = user.caches_hidden.toString()
+        status_n_unfound.text = user.caches_notfound.toString()
         Picasso.with(this.context).load(preapreGoogleMapsLink(user.home_location)).into(ppppp)
-
     }
 
     fun  preapreGoogleMapsLink(home_location: String?): String{
