@@ -14,6 +14,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.shhatrat.loggerek.R
+import com.shhatrat.loggerek.fragments.LogFragment
 import com.shhatrat.loggerek.fragments.StatusFragment
 import com.shhatrat.loggerek.fragments.UnsendFragment
 import com.shhatrat.loggerek.models.Data
@@ -123,6 +124,12 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
             showTip()
         else
             {
+                if(drawerItem!!.tag == "Good")
+                    changeFragment(LogFragment.getInstance(LogFragment.Type.GOOD))
+                if(drawerItem!!.tag == "Bad")
+                    changeFragment(LogFragment.getInstance(LogFragment.Type.BAD))
+                if(drawerItem!!.tag == "Default")
+                    changeFragment(LogFragment.getInstance(LogFragment.Type.DEFAULT))
                 if(drawerItem!!.tag == "Status")
                     changeFragment(StatusFragment.getInstance())
                 if(drawerItem!!.tag == "Unsend")
