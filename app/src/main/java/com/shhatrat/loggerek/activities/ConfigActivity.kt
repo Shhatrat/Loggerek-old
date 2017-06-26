@@ -14,6 +14,8 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.shhatrat.loggerek.R
+import com.shhatrat.loggerek.fragments.LogFragment
+import com.shhatrat.loggerek.fragments.SettingsFragment
 import com.shhatrat.loggerek.fragments.StatusFragment
 import com.shhatrat.loggerek.fragments.UnsendFragment
 import com.shhatrat.loggerek.models.Data
@@ -35,6 +37,14 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
     lateinit  var header : AccountHeader
     lateinit  var drawer : Drawer
 
+    val STATUS = "Status"
+    val UNSEND = "Unsend"
+    val GOOD = "Good"
+    val BAD = "Bad"
+    val DEFAULT = "Default"
+    val SETTINGS = "Settings"
+    val LOGOUT = "Logout"
+
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.shhatrat.loggerek.R.layout.activity_config)
@@ -50,7 +60,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
         preapreDrawer()
 
         if(isUserLogged()) {
-            changeFragment(StatusFragment.getInstance())
+            replaceFragment(StatusFragment.getInstance())
             preapreHeader()
         }
     }
@@ -104,17 +114,17 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                 .withToolbar(this@ConfigActivity.toolbar)
                 .withAccountHeader(header)
                 .addDrawerItems(
-                        PrimaryDrawerItem().withName("Status").withTag("Status").withIcon(R.drawable.ic_sentiment_very_satisfied_white_24dp),
-                        PrimaryDrawerItem().withName("Unsend").withTag("Unsend").withIcon(R.drawable.ic_clear_white_24dp),
+                        PrimaryDrawerItem().withName(STATUS).withTag(STATUS).withIcon(R.drawable.ic_sentiment_very_satisfied_white_24dp),
+                        PrimaryDrawerItem().withName(UNSEND).withTag(UNSEND).withIcon(R.drawable.ic_clear_white_24dp),
                         DividerDrawerItem(),
-                        PrimaryDrawerItem().withName("Good").withTag("Good").withIcon(R.drawable.ic_sentiment_very_satisfied_white_24dp),
-                        PrimaryDrawerItem().withName("Bad").withTag("Bad").withIcon(R.drawable.ic_sentiment_very_dissatisfied_white_24dp),
-                        PrimaryDrawerItem().withName("Default").withTag("Default").withIcon(R.drawable.ic_tab_white_24dp)
+                        PrimaryDrawerItem().withName(GOOD).withTag(GOOD).withIcon(R.drawable.ic_sentiment_very_satisfied_white_24dp),
+                        PrimaryDrawerItem().withName(BAD).withTag(BAD).withIcon(R.drawable.ic_sentiment_very_dissatisfied_white_24dp),
+                        PrimaryDrawerItem().withName(DEFAULT).withTag(DEFAULT).withIcon(R.drawable.ic_tab_white_24dp)
                         )
                 .withOnDrawerItemClickListener { view, position, drawerItem ->  changeFragment(drawerItem) }
                 .addStickyDrawerItems(
-                        PrimaryDrawerItem().withName("Settings").withTag("Settings").withIcon(R.drawable.ic_settings_white_24dp),
-                        PrimaryDrawerItem().withName("Logout").withTag("Logout").withIcon(R.drawable.ic_exit_to_app_white_24dp))
+                        PrimaryDrawerItem().withName(SETTINGS).withTag(SETTINGS).withIcon(R.drawable.ic_settings_white_24dp),
+                        PrimaryDrawerItem().withName(LOGOUT).withTag(LOGOUT).withIcon(R.drawable.ic_exit_to_app_white_24dp))
                 .build()
     }
 
@@ -123,17 +133,25 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
             showTip()
         else
             {
-                if(drawerItem!!.tag == "Status")
-                    changeFragment(StatusFragment.getInstance())
-                if(drawerItem!!.tag == "Unsend")
-                    changeFragment(UnsendFragment.getInstance())
-                if(drawerItem!!.tag == "Logout")
+                if(drawerItem!!.tag == GOOD)
+                    replaceFragment(LogFragment.getInstance(LogFragment.Type.GOOD))
+                if(drawerItem.tag == BAD)
+                    replaceFragment(LogFragment.getInstance(LogFragment.Type.BAD))
+                if(drawerItem.tag == DEFAULT)
+                    replaceFragment(LogFragment.getInstance(LogFragment.Type.DEFAULT))
+                if(drawerItem.tag == STATUS)
+                    replaceFragment(StatusFragment.getInstance())
+                if(drawerItem.tag == UNSEND)
+                    replaceFragment(UnsendFragment.getInstance())
+                if(drawerItem.tag == SETTINGS)
+                    replaceFragment(SettingsFragment.getInstance())
+                if(drawerItem.tag == LOGOUT)
                     logout()
             }
         return false
     }
 
-    fun changeFragment(fragemnt : Fragment){
+    fun replaceFragment(fragemnt : Fragment){
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.frame, fragemnt)
         transaction.commit()
@@ -162,7 +180,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                             realm.addUser(u)
                             preapreFab()
                             preapreHeader()
-                            changeFragment(StatusFragment.getInstance())
+                            replaceFragment(StatusFragment.getInstance())
                         }
                     }, {
                         e -> android.util.Log.d("apiLog", e.message)})

@@ -29,7 +29,7 @@ class StatusFragment : Fragment() {
         status_n_found.text = user.caches_found.toString()
         status_n_hidden.text = user.caches_hidden.toString()
         status_n_unfound.text = user.caches_notfound.toString()
-        Picasso.with(this.context).load(preapreGoogleMapsLink(user.home_location)).into(ppppp)
+        Picasso.with(this.context).load(preapreGoogleMapsLink(user.home_location)).into(map_image)
     }
 
     fun  preapreGoogleMapsLink(home_location: String?): String{
