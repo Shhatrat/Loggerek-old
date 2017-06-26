@@ -1,19 +1,22 @@
 package com.shhatrat.loggerek.fragments
 
 
+import android.app.getKoin
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import com.afollestad.materialdialogs.MaterialDialog
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.adapters.LogAdapter
+import com.shhatrat.loggerek.models.SingleLog
 import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTouchListener
 import io.reactivex.disposables.Disposable
+import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_log.*
 
 class LogFragment : Fragment() {
@@ -24,6 +27,8 @@ class LogFragment : Fragment() {
 
     private var subscribe: Disposable? = null
     lateinit var type : Type
+    val realm by lazy{activity.getKoin().get<Realm>()}
+
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -32,11 +37,43 @@ class LogFragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRecycleView()
+        setupFab()
+    }
+
+    private fun setupFab() {
+        fab_add_log.setOnClickListener {
+            MaterialDialog.Builder(this.context)
+                    .title("Add log")
+                    .positiveText("ok")
+                    .negativeText("cancel")
+                    .inputType(android.text.InputType.TYPE_CLASS_TEXT)
+                    .input("", " ", com.afollestad.materialdialogs.MaterialDialog.InputCallback { dialog, input -> saveToDb(input.toString()) })
+                    .show()
+        }
+    }
+
+    private fun  saveToDb(log: String) {
+        val toAdd = SingleLog()
+        toAdd.saveEnum(type)
+        toAdd.log = log
+        realm.beginTransaction()
+        realm.copyToRealm(toAdd)
+        realm.commitTransaction()
+        refreshDataAndRecycleView()
+    }
+
+    fun refreshDataAndRecycleView(){
+        log_recycle_view.adapter = LogAdapter(this.context, getList(), type)
+        log_recycle_view.adapter.notifyDataSetChanged()
+        getList()
+    }
+
+    private fun setupRecycleView() {
         log_recycle_view.layoutManager = LinearLayoutManager(this.context)
         log_recycle_view.hasFixedSize()
-        log_recycle_view.setOnTouchListener(oo(log_recycle_view))
-        log_recycle_view.adapter = LogAdapter(this.context, getList())
-        setupItemClick()
+        log_recycle_view.setOnTouchListener(preapreListener(log_recycle_view))
+        log_recycle_view.adapter = LogAdapter(this.context, getList(), type)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,12 +81,12 @@ class LogFragment : Fragment() {
         type =  Type.valueOf(arguments.getString("type"))
     }
 
-    fun getList() : ArrayList<String>{
-        var lists = ArrayList<String>()
-        lists.add("JAVA")
-        lists.add("KOTLIN")
-        lists.add("PHP")
-        return lists;
+    fun getList() : ArrayList<String?> {
+        val list =  realm.where(SingleLog::class.java)
+                .equalTo("type", type.name)
+                .findAll()
+                .toList()
+        return ArrayList(list.map { e -> e.log }.toList())
     }
 
     companion object{
@@ -62,50 +99,60 @@ class LogFragment : Fragment() {
         }
     }
 
-    private fun setupItemClick() {
-        val adapter=  log_recycle_view.adapter as LogAdapter
-        subscribe = adapter.getClickListener()
-                .subscribe({
-                    Toast.makeText(this.context, "Clicked on $it", Toast.LENGTH_LONG).show()
-                })
-    }
+    fun preapreListener(recyclerView :RecyclerView): SwipeDismissRecyclerViewTouchListener? {
 
-
-
-    fun oo(recyclerView :RecyclerView): SwipeDismissRecyclerViewTouchListener? {
-
-        var ff = SwipeDismissRecyclerViewTouchListener.Builder(
+        return SwipeDismissRecyclerViewTouchListener.Builder(
                 recyclerView,
                 object : SwipeDismissRecyclerViewTouchListener.DismissCallbacks{
                     override fun onDismiss(view: View?) {
                         val id = recyclerView.getChildAdapterPosition(view)
                         val adapter =  recyclerView.adapter as LogAdapter
+                        removeFromDb(adapter.lists.get(id))
                         adapter.lists.removeAt(id)
-                        adapter.notifyDataSetChanged()
+                        log_recycle_view.adapter = LogAdapter(this@LogFragment.context, getList(), type)
                     }
 
                     override fun canDismiss(p0: Int): Boolean {
                         return true
                     }
                 })
-                .setItemClickCallback {
-                    SwipeDismissRecyclerViewTouchListener.OnItemClickCallBack {
-                        Log.d("ddd0", recyclerView.getChildAdapterPosition(view).toString())
-                        val adapter =  recyclerView.adapter as LogAdapter
-                        Log.d("ddd0dd", adapter.getList().get(recyclerView.getChildAdapterPosition(view)))
+                .setItemClickCallback({
+                    u ->
+                    run {
+                        try {
+                            val adapter = recyclerView.adapter as LogAdapter
+                            editLog(adapter.lists[u])
+                        }catch (e :Throwable){}
                     }
-                }
+                })
                 .setIsVertical(false)
-//                .setItemTouchCallback(SwipeDismissRecyclerViewTouchListener.OnItemTouchCallBack())
-//                .setItemTouchCallback {
-//                    SwipeDismissRecyclerViewTouchListener.OnItemTouchCallBack {
-//                        Log.d("ddd0", recyclerView.getChildAdapterPosition(view).toString())
-//                        val adapter =  recyclerView.adapter as LogAdapter
-//                        Log.d("ddd0dd", adapter.getList().get(recyclerView.getChildAdapterPosition(view)))
-//                    }
-//                }
                 .create()
+    }
 
-        return ff
-                }
+    private fun  removeFromDb(get: String?) {
+        realm.beginTransaction()
+        realm.where(SingleLog::class.java)
+                .equalTo("type", type.name)
+                .equalTo("log", get)
+                .findAll().deleteAllFromRealm()
+        realm.commitTransaction()
+    }
+
+    private fun  editLog(get: String?){
+        MaterialDialog.Builder(this.context)
+                .title("Edit log")
+                .positiveText("ok")
+                .negativeText("cancel")
+                .neutralText("delete")
+                .neutralColor(ContextCompat.getColor(context, R.color.md_red_400))
+                .onNeutral { dialog, which -> run { removeFromDb(get); refreshDataAndRecycleView() } }
+                .inputType(android.text.InputType.TYPE_CLASS_TEXT)
+                .input(get, get, com.afollestad.materialdialogs.MaterialDialog.InputCallback { dialog, input -> updateToDb(get ,input.toString()) })
+                .show()
+    }
+
+    private fun  updateToDb(get: String?, toString: String) {
+        removeFromDb(get)
+        saveToDb(toString)
+    }
 }
