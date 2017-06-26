@@ -17,21 +17,13 @@ import com.shhatrat.loggerek.R
  */
 class SettingsFragment : PreferenceFragmentCompat() {
 
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.preference)
     }
-
 
     companion object{
         fun getInstance() : SettingsFragment {
             return SettingsFragment()
         }
     }
-
-//    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-//                              savedInstanceState: Bundle?): View? {
-//        return inflater!!.inflate(R.layout.fragment_settings, container, false)
-//    }
-
 }

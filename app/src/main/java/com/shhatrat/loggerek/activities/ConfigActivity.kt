@@ -95,7 +95,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                     .title("Set code")
                     .positiveText("ok")
                     .inputType(android.text.InputType.TYPE_CLASS_TEXT)
-                    .input("", " ", com.afollestad.materialdialogs.MaterialDialog.InputCallback { dialog, input -> finishOAuth(input.toString()) })
+                    .input("", " ", com.afollestad.materialdialogs.MaterialDialog.InputCallback { _, input -> finishOAuth(input.toString()) })
                     .show()
         }
     }
@@ -121,7 +121,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                         PrimaryDrawerItem().withName(BAD).withTag(BAD).withIcon(R.drawable.ic_sentiment_very_dissatisfied_white_24dp),
                         PrimaryDrawerItem().withName(DEFAULT).withTag(DEFAULT).withIcon(R.drawable.ic_tab_white_24dp)
                         )
-                .withOnDrawerItemClickListener { view, position, drawerItem ->  changeFragment(drawerItem) }
+                .withOnDrawerItemClickListener { _, _, drawerItem ->  changeFragment(drawerItem) }
                 .addStickyDrawerItems(
                         PrimaryDrawerItem().withName(SETTINGS).withTag(SETTINGS).withIcon(R.drawable.ic_settings_white_24dp),
                         PrimaryDrawerItem().withName(LOGOUT).withTag(LOGOUT).withIcon(R.drawable.ic_exit_to_app_white_24dp))
@@ -133,7 +133,8 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
             showTip()
         else
             {
-                if(drawerItem!!.tag == GOOD)
+                toolbar.title = "${getString(R.string.app_name)} - ${drawerItem!!.tag}"
+                if(drawerItem.tag == GOOD)
                     replaceFragment(LogFragment.getInstance(LogFragment.Type.GOOD))
                 if(drawerItem.tag == BAD)
                     replaceFragment(LogFragment.getInstance(LogFragment.Type.BAD))
