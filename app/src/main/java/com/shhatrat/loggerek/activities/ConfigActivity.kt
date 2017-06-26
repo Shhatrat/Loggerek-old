@@ -2,7 +2,6 @@ package com.shhatrat.loggerek.activities
 
 import android.app.getKoin
 import android.content.Intent
-import android.preference.PreferenceFragment
 import android.support.v4.app.Fragment
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -15,7 +14,6 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.shhatrat.loggerek.R
-import com.shhatrat.loggerek.fragments.SettingsFragment
 import com.shhatrat.loggerek.fragments.StatusFragment
 import com.shhatrat.loggerek.fragments.UnsendFragment
 import com.shhatrat.loggerek.models.Data
@@ -37,14 +35,6 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
     lateinit  var header : AccountHeader
     lateinit  var drawer : Drawer
 
-    val STATUS = "Status"
-    val UNSEND = "Unsend"
-    val GOOD = "Good"
-    val BAD = "Bad"
-    val DEFAULT = "Default"
-    val SETTINGS = "Settings"
-    val LOGOUT = "Logout"
-
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.shhatrat.loggerek.R.layout.activity_config)
@@ -60,7 +50,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
         preapreDrawer()
 
         if(isUserLogged()) {
-            replaceFragment(StatusFragment.getInstance())
+            changeFragment(StatusFragment.getInstance())
             preapreHeader()
         }
     }
@@ -114,17 +104,17 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                 .withToolbar(this@ConfigActivity.toolbar)
                 .withAccountHeader(header)
                 .addDrawerItems(
-                        PrimaryDrawerItem().withName(STATUS).withTag(STATUS).withIcon(R.drawable.ic_sentiment_very_satisfied_white_24dp),
-                        PrimaryDrawerItem().withName(UNSEND).withTag(UNSEND).withIcon(R.drawable.ic_clear_white_24dp),
+                        PrimaryDrawerItem().withName("Status").withTag("Status").withIcon(R.drawable.ic_sentiment_very_satisfied_white_24dp),
+                        PrimaryDrawerItem().withName("Unsend").withTag("Unsend").withIcon(R.drawable.ic_clear_white_24dp),
                         DividerDrawerItem(),
-                        PrimaryDrawerItem().withName(GOOD).withTag(GOOD).withIcon(R.drawable.ic_sentiment_very_satisfied_white_24dp),
-                        PrimaryDrawerItem().withName(BAD).withTag(BAD).withIcon(R.drawable.ic_sentiment_very_dissatisfied_white_24dp),
-                        PrimaryDrawerItem().withName(DEFAULT).withTag(DEFAULT).withIcon(R.drawable.ic_tab_white_24dp)
+                        PrimaryDrawerItem().withName("Good").withTag("Good").withIcon(R.drawable.ic_sentiment_very_satisfied_white_24dp),
+                        PrimaryDrawerItem().withName("Bad").withTag("Bad").withIcon(R.drawable.ic_sentiment_very_dissatisfied_white_24dp),
+                        PrimaryDrawerItem().withName("Default").withTag("Default").withIcon(R.drawable.ic_tab_white_24dp)
                         )
                 .withOnDrawerItemClickListener { view, position, drawerItem ->  changeFragment(drawerItem) }
                 .addStickyDrawerItems(
-                        PrimaryDrawerItem().withName(SETTINGS).withTag(SETTINGS).withIcon(R.drawable.ic_settings_white_24dp),
-                        PrimaryDrawerItem().withName(LOGOUT).withTag(LOGOUT).withIcon(R.drawable.ic_exit_to_app_white_24dp))
+                        PrimaryDrawerItem().withName("Settings").withTag("Settings").withIcon(R.drawable.ic_settings_white_24dp),
+                        PrimaryDrawerItem().withName("Logout").withTag("Logout").withIcon(R.drawable.ic_exit_to_app_white_24dp))
                 .build()
     }
 
@@ -133,30 +123,27 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
             showTip()
         else
             {
-                if(drawerItem!!.tag == STATUS)
-                    replaceFragment(StatusFragment.getInstance())
-                if(drawerItem.tag == UNSEND)
-                    replaceFragment(UnsendFragment.getInstance())
-                if(drawerItem.tag == LOGOUT)
+                if(drawerItem!!.tag == "Status")
+                    changeFragment(StatusFragment.getInstance())
+                if(drawerItem!!.tag == "Unsend")
+                    changeFragment(UnsendFragment.getInstance())
+                if(drawerItem!!.tag == "Logout")
                     logout()
-                if(drawerItem.tag == SETTINGS)
-                    replaceFragment(SettingsFragment.getInstance())
             }
         return false
     }
 
-    fun replaceFragment(fragemnt : Fragment){
+    fun changeFragment(fragemnt : Fragment){
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.frame, fragemnt)
         transaction.commit()
     }
 
 
-
     fun showTip(){
         MaterialTapTargetPrompt.Builder(this)
                 .setTarget(findViewById(R.id.fab))
-                .setPrimaryText(getString(R.string.add_account))
+                .setPrimaryText("Add account")
                 .setCaptureTouchEventOnFocal(true)
                 .setCaptureTouchEventOutsidePrompt(true)
                 .setSecondaryText("")
@@ -175,7 +162,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                             realm.addUser(u)
                             preapreFab()
                             preapreHeader()
-                            replaceFragment(StatusFragment.getInstance())
+                            changeFragment(StatusFragment.getInstance())
                         }
                     }, {
                         e -> android.util.Log.d("apiLog", e.message)})
@@ -188,8 +175,12 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
         realm.deteleAllWithoutMagic()
         Data.clear()
         preapreFab()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.remove(supportFragmentManager.fragments.get(0))
+        transaction.commit()
         header.removeProfile(0)
     }
+
 
     fun String.getUTF8String() :String = URLEncoder.encode(this, "UTF-8")
 }
