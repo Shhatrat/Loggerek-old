@@ -45,6 +45,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
     val SETTINGS = "Settings"
     val LOGOUT = "Logout"
 
+
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.shhatrat.loggerek.R.layout.activity_config)
@@ -92,8 +93,8 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
         if(autorization) {
             autorization = false
            com.afollestad.materialdialogs.MaterialDialog.Builder(this)
-                    .title("Set code")
-                    .positiveText("ok")
+                    .title(getString(R.string.set_code))
+                    .positiveText(getString(R.string.ok))
                     .inputType(android.text.InputType.TYPE_CLASS_TEXT)
                     .input("", " ", com.afollestad.materialdialogs.MaterialDialog.InputCallback { _, input -> finishOAuth(input.toString()) })
                     .show()
@@ -162,7 +163,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
     fun showTip(){
         MaterialTapTargetPrompt.Builder(this)
                 .setTarget(findViewById(R.id.fab))
-                .setPrimaryText("Add account")
+                .setPrimaryText(getString(R.string.add_account))
                 .setCaptureTouchEventOnFocal(true)
                 .setCaptureTouchEventOutsidePrompt(true)
                 .setSecondaryText("")

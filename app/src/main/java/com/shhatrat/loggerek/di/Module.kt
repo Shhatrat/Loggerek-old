@@ -1,6 +1,8 @@
 package com.shhatrat.loggerek.di
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.support.v7.preference.PreferenceManager
 import com.shhatrat.loggerek.R.string.consumer_key
 import com.shhatrat.loggerek.R.string.consumer_secret
 import com.shhatrat.loggerek.api.Api
@@ -28,7 +30,12 @@ class Module : AndroidModule(){
                 provide { retrofit(get()) }
                 provide { ocApi(get()) }
                 provide { realm()}
+                provide { sharedPreferences(get()) }
             }
+    }
+
+    fun sharedPreferences(c : Context): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(c)
     }
 
     fun realm() : Realm{

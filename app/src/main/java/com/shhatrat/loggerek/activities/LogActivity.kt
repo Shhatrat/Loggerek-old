@@ -1,24 +1,28 @@
 package com.shhatrat.loggerek.activities
 
 import android.app.getKoin
-import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.Toast
-import com.shhatrat.loggerek.models.Data
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
+import com.shhatrat.loggerek.fragments.LogFragment
+import com.shhatrat.loggerek.models.SingleLog
 import de.mateware.snacky.Snacky
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_log.*
+import java.util.*
 
 
 class LogActivity : AbstractActivity() {
+
+    val sharedPreferences by lazy{getKoin().get<SharedPreferences>()}
+    val realm by lazy{getKoin().get<Realm>()}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,9 +41,57 @@ class LogActivity : AbstractActivity() {
         }
         val op = getOP(intent.data.toString())
 
-        f_mylog.setOnClickListener { logCache(op, getDefaultLog()) }
-        f_good.setOnClickListener { logCache(op, getGoodLog()) }
-        f_bad.setOnClickListener { logCache(op, getBadLog()) }
+        f_mylog.setOnClickListener { logCache(op, log(LogFragment.Type.DEFAULT)) }
+        f_good.setOnClickListener { logCache(op, log(LogFragment.Type.GOOD)) }
+        f_bad.setOnClickListener { logCache(op, log(LogFragment.Type.BAD)) }
+    }
+
+    private fun  log(type: LogFragment.Type): String {
+        var list = realm.getLog(LogFragment.Type.GOOD)
+        if(list.isEmpty()) {
+            list = arrayListOf(getString(R.string.thanks_for_cache))
+        }
+        when(type){
+            LogFragment.Type.GOOD -> {
+                if(sharedPreferences.getBoolean("mix_good", false))
+                    return mixLogs(list)
+                if(sharedPreferences.getBoolean("random_good", false))
+                    return randomLogs(list)
+            }
+            LogFragment.Type.BAD -> {
+                if(sharedPreferences.getBoolean("mix_bad", false))
+                    return mixLogs(list)
+                if(sharedPreferences.getBoolean("random_bad", false))
+                    return randomLogs(list)
+            }
+            LogFragment.Type.DEFAULT -> {
+                if(sharedPreferences.getBoolean("mix_default", false))
+                   return mixLogs(list)
+                if(sharedPreferences.getBoolean("random_default", false))
+                   return randomLogs(list)
+            }
+        }
+        return getString(R.string.thanks_for_cache)
+    }
+
+    private fun  randomLogs(list: List<String?>): String {
+        val r =  Math.random() * list.size
+        return list[r.toInt()]!!
+    }
+
+    private fun  mixLogs(list: List<String?>): String {
+        val random = Random().nextInt(list.size)
+        val c = hashMapOf<Int , String>()
+        for(i in random downTo 0)
+        {
+           val index =  Random().nextInt(list.size)
+           c.put(index, list[index]!!)
+        }
+        var output = ""
+        c.map { u -> u.value }
+                .toList()
+                .forEach { u -> output= "$output $u" }
+        return output
     }
 
 
@@ -91,24 +143,10 @@ class LogActivity : AbstractActivity() {
         f_progress.visibility= VISIBLE
     }
 
-    private fun getDefaultLog() : String{
-        if(Data.defaultLog !=null)
-        if(Data.defaultLog!!.isEmpty())
-            return "Dzięki za skrzynkę!"
-        return Data.defaultLog ?: "Dzięki za skrzynkę!"
-    }
-
-    private fun getBadLog() : String{
-        if(Data.badLog !=null)
-            if(Data.badLog!!.isEmpty())
-                return "Dzięki za skrzynkę!"
-        return Data.badLog ?: "Dzięki za skrzynkę!"
-    }
-
-    private fun getGoodLog() : String{
-        if(Data.goodLog !=null)
-            if(Data.goodLog!!.isEmpty())
-                return "Dzięki za skrzynkę!"
-        return Data.goodLog ?: "Dzięki za skrzynkę!"
+    fun Realm.getLog(type : LogFragment.Type) : List<String?>{
+        val l = this.where(SingleLog::class.java)
+                .equalTo("type", type.name)
+                .findAll().toList().map { log -> log.log }
+        return ArrayList(l)
     }
 }
