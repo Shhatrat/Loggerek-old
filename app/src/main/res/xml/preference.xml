@@ -6,7 +6,7 @@
         android:title="Quick Log">
         <CheckBoxPreference
             android:key="quick_save"
-            android:summary="if no Internet connection"
+            android:summary="when sening failed"
             android:title="Save log"
             app:defaultValue="true"
             app:key="quick_save" />
@@ -35,34 +35,40 @@
         <CheckBoxPreference
             android:key="mix_good"
             android:summary="if is set more than 1"
-            android:title="Mix good log" />
+            android:title="Mix good log"
+            app:key="mix_good" />
 
         <CheckBoxPreference
             android:key="mix_bad"
             android:summary="if is set more than 1"
-            android:title="Mix bad log"/>
+            android:title="Mix bad log"
+            app:key="mix_bad" />
 
         <CheckBoxPreference
             android:key="mix_default"
             android:summary=" if is set more than 1"
-            android:title="Mix default log"/>
+            android:title="Mix default log"
+            app:key="mix_default" />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="Selecting">
 
         <CheckBoxPreference
             android:key="random_good"
+            android:summary="if is set more than 1"
             android:title="Select random good log"
-            android:summary="if is set more than 1"/>
+            app:key="random_good" />
 
         <CheckBoxPreference
             android:key="random_bad"
+            android:summary="if is set more than 1"
             android:title="Select random bad log"
-            android:summary="if is set more than 1"/>
+            app:key="random_bad" />
 
         <CheckBoxPreference
             android:key="random_default"
+            android:summary="if is set more than 1"
             android:title="Select random default log"
-            android:summary="if is set more than 1"/>
+            app:key="random_default" />
     </PreferenceCategory>
 </PreferenceScreen>

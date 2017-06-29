@@ -1,21 +1,26 @@
 package com.shhatrat.loggerek.activities
 
 import android.app.getKoin
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.util.Log
+
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
 import com.shhatrat.loggerek.fragments.LogFragment
+import com.shhatrat.loggerek.models.OcResponse
 import com.shhatrat.loggerek.models.SingleLog
+import com.shhatrat.loggerek.models.Unsend
 import de.mateware.snacky.Snacky
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_log.*
+import retrofit2.Response
 import java.util.*
 
 
@@ -102,31 +107,70 @@ class LogActivity : AbstractActivity() {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    u -> success(u.body()!!)}, {
-                    e -> error(e.message)})
+                    u -> success(getOP(fullLink), log, u)}, {
+                    e -> error(getOP(fullLink), log, e)})
     }
 
-    fun success(u: com.shhatrat.loggerek.models.Log) {
-        var sn = Snacky.builder().setActivty(this).setText(u.message).setDuration(2000)
-        if(u.success)
-            sn.success()
-        else
-            sn.error()
-        var oo = sn.build()
-        f_progress.visibility = GONE
-        oo.addCallback(object : Snackbar.Callback(){
-            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                super.onDismissed(transientBottomBar, event)
-                finish()
-            }
-        })
-        oo.show()
+    fun success(cacheOp : String, log: String, u : Response<com.shhatrat.loggerek.models.Log> ) {
+        if(!u.isSuccessful) {
+            saveLogtoDb(cacheOp, log, u.message(), u.body()!!.message)
+            return
+        }
 
+        if(u.message() == OcResponse.SUCESS.message){
+            val sn = Snacky.builder().setActivty(this).setText(u.body()!!.message).setDuration(2000)
+            val callback = sn.build()
+            f_progress.visibility = GONE
+            callback.addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    finish()
+                }
+            })
+            sn.success().show()
+            return
+        }
+
+        if(u.body()!!.message == OcResponse.ALREADY_CUBMITTED.message)
+        {
+            val sn = Snacky.builder().setActivty(this).setText(u.body()!!.message).setDuration(2000)
+            val callback = sn.build()
+            f_progress.visibility = GONE
+            callback.addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    finish()
+                }
+            })
+            sn.error().show()
+            saveLogtoDb(cacheOp, log, u.message(), u.body()!!.message)
+            return
+        }
+
+        if( u.body()!!.message == OcResponse.PASSWORD.message){
+            startActivity(Intent(this, FullLogActivity::class.java))
+            //add bundle
+        }
     }
 
-    fun error(message: String?) {
+    private fun saveLogtoDb(cacheOp: String, log: String, u : String , type : String) {
+
+        if(sharedPreferences.getBoolean("quick_save", true))
+        {
+            val errorLog = Unsend()
+            errorLog.cacheOp = cacheOp
+            errorLog.errorMessage  = u
+            errorLog.log = log
+            errorLog.type = type
+            realm.beginTransaction()
+            realm.insert(errorLog)
+            realm.commitTransaction()
+        }
+    }
+
+    fun error(cacheOp : String, log: String, u: Throwable) {
         f_progress.visibility = GONE
-        val sn = Snacky.builder().setActivty(this).setText(message).setDuration(2000).error()
+        val sn = Snacky.builder().setActivty(this).setText(u.message).setDuration(2000).error()
         sn.addCallback(object : Snackbar.Callback(){
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
@@ -134,6 +178,7 @@ class LogActivity : AbstractActivity() {
             }
         })
         sn.show()
+        saveLogtoDb(cacheOp, log, u.message!! , OcResponse.NO_INTERNET.message)
     }
 
     private fun hideFabsShowProgress(){
