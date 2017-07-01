@@ -1,11 +1,13 @@
 package com.shhatrat.loggerek.adapters
 
-import android.content.Context
+import android.app.Activity
+import android.app.getKoin
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.shhatrat.loggerek.R
+import com.shhatrat.loggerek.activities.getUTF8String
 import com.shhatrat.loggerek.models.Unsend
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
@@ -14,11 +16,13 @@ import kotlinx.android.synthetic.main.list_unsend_row.view.*
 /**
  * Created by szymon on 6/30/17.
  */
-class UnsendAdapter (var c: Context, var lists: ArrayList<Unsend>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class UnsendAdapter (var c: Activity, var lists: ArrayList<Unsend>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     fun getList(): ArrayList<Unsend> {
         return lists
     }
+
+    val retrofit by lazy {c.getKoin().get<com.shhatrat.loggerek.api.Api>()}
 
 
     fun getClickListener(): Observable<String> {
@@ -37,12 +41,20 @@ class UnsendAdapter (var c: Context, var lists: ArrayList<Unsend>) : RecyclerVie
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
-        (holder as Item).bindData(lists[position])
+        retrofit.geocache(lists[position].cacheOp!! ,"name".getUTF8String())
+                .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
+                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .subscribe({
+                    u ->
+                    (holder as Item).bindData(lists[position], u.name)
+                }, {
+                    (holder as Item).bindData(lists[position])
+                })
     }
 
     class Item(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindData(u: Unsend) {
-            itemView.unsend_row_title.text = "${u.cacheOp} - ${u.type}"
+        fun bindData(u: Unsend, cacheName : String = u.cacheOp!!) {
+            itemView.unsend_row_title.text = "$cacheName - ${u.type}"
             itemView.unsend_row_conent.text = u.log
         }
     }

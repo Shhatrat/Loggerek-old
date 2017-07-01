@@ -212,10 +212,10 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
         header.removeProfile(0)
         updateBadge()
     }
-
-
-    fun String.getUTF8String() :String = URLEncoder.encode(this, "UTF-8")
 }
+
+fun String.getUTF8String() :String = URLEncoder.encode(this, "UTF-8")
+
 private fun  Realm.addUser(u: User) {
     this.beginTransaction()
     this.copyToRealmOrUpdate(u)

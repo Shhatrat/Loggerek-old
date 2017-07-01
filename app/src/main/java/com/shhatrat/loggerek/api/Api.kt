@@ -1,5 +1,6 @@
 package com.shhatrat.loggerek.api
 
+import com.shhatrat.loggerek.models.Cache
 import com.shhatrat.loggerek.models.Log
 import com.shhatrat.loggerek.models.NoteResponse
 import com.shhatrat.loggerek.models.User
@@ -28,4 +29,9 @@ interface Api {
                  @Query("logtype") logtype :String,
                  @Query("comment") comment :String)
                 : Observable<Response<Log>>
+
+    @GET("caches/geocache")
+    fun geocache(@Query("cache_code") cache_code :String,
+                 @Query("fields", encoded = true) fields : String)
+                : Observable<Cache>
 }

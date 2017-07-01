@@ -44,7 +44,7 @@ class UnsendFragment : Fragment() {
         unsend_recycleview.layoutManager = LinearLayoutManager(this.context)
         unsend_recycleview.hasFixedSize()
         unsend_recycleview.setOnTouchListener(preapreListener(unsend_recycleview))
-        unsend_recycleview.adapter = UnsendAdapter(this.context, getList())
+        unsend_recycleview.adapter = UnsendAdapter(this.activity, getList())
     }
 
     fun preapreListener(recyclerView : RecyclerView): SwipeDismissRecyclerViewTouchListener? {
@@ -57,7 +57,7 @@ class UnsendFragment : Fragment() {
                         val adapter =  recyclerView.adapter as UnsendAdapter
                         removeFromDb(adapter.lists[id].cacheOp!!, adapter.lists[id].log!!, adapter.lists[id].timestamp!!)
                         adapter.lists.removeAt(id)
-                        unsend_recycleview.adapter = UnsendAdapter(this@UnsendFragment.context, getList())
+                        unsend_recycleview.adapter = UnsendAdapter(this@UnsendFragment.activity, getList())
                     }
 
                     override fun canDismiss(p0: Int): Boolean {
@@ -76,7 +76,8 @@ class UnsendFragment : Fragment() {
 
     private fun  showDialog(unsend: Unsend) {
         MaterialDialog.Builder(this.context)
-                .title("Unsend")
+                .title("Unsend log")
+                .content("Select action")
                 .negativeText("cancel")
                 .neutralText("delete")
                 .neutralColor(ContextCompat.getColor(context, R.color.md_red_400))
