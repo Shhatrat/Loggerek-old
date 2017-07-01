@@ -1,7 +1,6 @@
 package com.shhatrat.loggerek.adapters
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -44,9 +43,9 @@ class LogAdapter(var c: Context, var lists: ArrayList<String?>, var type : LogFr
         fun bindData(_list: String, type : LogFragment.Type) {
             itemView.textView.text = _list
 
-            when(type){LogFragment.Type.GOOD -> itemView.f_icon.setImageResource(R.drawable.ic_sentiment_very_satisfied_white_24dp)
-                LogFragment.Type.BAD -> itemView.f_icon.setImageResource(R.drawable.ic_sentiment_very_dissatisfied_white_24dp)
-                LogFragment.Type.DEFAULT -> itemView.f_icon.setImageResource(R.drawable.ic_tab_white_24dp)
+            when(type){LogFragment.Type.GOOD -> itemView.unsend_row_fab.setImageResource(R.drawable.ic_sentiment_very_satisfied_white_24dp)
+                LogFragment.Type.BAD -> itemView.unsend_row_fab.setImageResource(R.drawable.ic_sentiment_very_dissatisfied_white_24dp)
+                LogFragment.Type.DEFAULT -> itemView.unsend_row_fab.setImageResource(R.drawable.ic_tab_white_24dp)
             }
         }
     }

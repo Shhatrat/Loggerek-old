@@ -148,8 +148,17 @@ class LogActivity : AbstractActivity() {
         }
 
         if( u.body()!!.message == OcResponse.PASSWORD.message){
-            startActivity(Intent(this, FullLogActivity::class.java))
-            //add bundle
+            val sn = Snacky.builder().setActivty(this).setText(u.body()!!.message).setDuration(2000)
+            val callback = sn.build()
+            f_progress.visibility = GONE
+            callback.addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    startActivity(Intent(this@LogActivity, FullLogActivity::class.java))
+                    //add bundle
+                }
+            })
+            saveLogtoDb(cacheOp, log, u.message(), u.body()!!.message)
         }
     }
 
@@ -162,6 +171,7 @@ class LogActivity : AbstractActivity() {
             errorLog.errorMessage  = u
             errorLog.log = log
             errorLog.type = type
+            errorLog.timestamp = System.currentTimeMillis()
             realm.beginTransaction()
             realm.insert(errorLog)
             realm.commitTransaction()

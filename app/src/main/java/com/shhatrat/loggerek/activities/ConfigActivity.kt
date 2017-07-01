@@ -2,6 +2,7 @@ package com.shhatrat.loggerek.activities
 
 import android.app.getKoin
 import android.content.Intent
+import android.graphics.Color
 import android.support.v4.app.Fragment
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -9,6 +10,8 @@ import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.DrawerBuilder
+import com.mikepenz.materialdrawer.holder.BadgeStyle
+import com.mikepenz.materialdrawer.holder.StringHolder
 import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
@@ -19,6 +22,7 @@ import com.shhatrat.loggerek.fragments.SettingsFragment
 import com.shhatrat.loggerek.fragments.StatusFragment
 import com.shhatrat.loggerek.fragments.UnsendFragment
 import com.shhatrat.loggerek.models.Data
+import com.shhatrat.loggerek.models.Unsend
 import com.shhatrat.loggerek.models.User
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_config.*
@@ -66,6 +70,12 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
         }
     }
 
+    fun updateBadge(){
+        drawer.updateBadge(1, StringHolder(realm.where(Unsend::class.java).findAll().count().toString()))
+    }
+
+    fun getUnsendNumber() = realm.where(Unsend::class.java).findAll().count().toString()
+
     fun  isViewed(): Boolean = Data.introViewed
 
     fun isUserLogged(): Boolean = Data.consumerkey !=null
@@ -90,6 +100,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        updateBadge()
         if(autorization) {
             autorization = false
            com.afollestad.materialdialogs.MaterialDialog.Builder(this)
@@ -116,7 +127,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                 .withAccountHeader(header)
                 .addDrawerItems(
                         PrimaryDrawerItem().withName(STATUS).withTag(STATUS).withIcon(R.drawable.ic_sentiment_very_satisfied_white_24dp),
-                        PrimaryDrawerItem().withName(UNSEND).withTag(UNSEND).withIcon(R.drawable.ic_clear_white_24dp),
+                        PrimaryDrawerItem().withName(UNSEND).withTag(UNSEND).withIcon(R.drawable.ic_clear_white_24dp).withIdentifier(1).withBadge(getUnsendNumber()).withBadgeStyle(BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.md_red_700)),
                         DividerDrawerItem(),
                         PrimaryDrawerItem().withName(GOOD).withTag(GOOD).withIcon(R.drawable.ic_sentiment_very_satisfied_white_24dp),
                         PrimaryDrawerItem().withName(BAD).withTag(BAD).withIcon(R.drawable.ic_sentiment_very_dissatisfied_white_24dp),
@@ -199,6 +210,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
         transaction.remove(supportFragmentManager.fragments.get(0))
         transaction.commit()
         header.removeProfile(0)
+        updateBadge()
     }
 
 

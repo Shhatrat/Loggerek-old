@@ -10,4 +10,5 @@ open class Unsend : RealmObject(){
     var log : String? = ""
     var errorMessage : String? = ""
     var type : String? = ""
+    var timestamp : Long? = 0
 }
