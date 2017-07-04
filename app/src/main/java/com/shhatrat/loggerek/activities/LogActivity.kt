@@ -5,8 +5,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.util.Log
-
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.shhatrat.loggerek.R
@@ -32,18 +30,12 @@ class LogActivity : AbstractActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log)
-        getWindow().getDecorView().setBackgroundResource(android.R.color.transparent)
+        window.decorView.setBackgroundResource(android.R.color.transparent)
 
         checkConfiguration()
         checkIntent()
 
         val intent = intent
-        if (intent != null) {
-            val uri = intent.data
-            if (uri != null) {
-                    Log.d("ddddd" , uri.toString() )
-            }
-        }
         val op = getOP(intent.data.toString())
 
         f_mylog.setOnClickListener { logCache(op, log(LogFragment.Type.DEFAULT)) }
