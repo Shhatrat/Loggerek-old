@@ -4,29 +4,58 @@ import android.app.getKoin
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.View
-import com.pawegio.kandroid.visible
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
 import com.shhatrat.loggerek.models.Cache
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_full_log.*
+import kotlinx.android.synthetic.main.activity_full_log_fab.*
 
 class FullLogActivity : AbstractActivity() {
 
     val retrofit by lazy { getKoin().get<Api>() }
     var reco = false
     var passToNote = true
+    var date : String = System.currentTimeMillis().toString()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_full_log_fab)
         downloadCache()
         preapreListeners()
-        preapreSpinner()
     }
 
     private fun preapreListeners() {
         full_image_reco.setOnClickListener { changeReco() }
         full_text_reco.setOnClickListener { changeReco()  }
+        full_fab.setOnClickListener { fabListener() }
+    }
+
+    fun fabListener(){
+        retrofit.logEntryFull(getOpFormIntent()!!,
+                full_logtype.getItems<String>().get(full_logtype.selectedIndex),
+                full_log.text.toString(),
+                date,
+                reco,
+                full_rating.numStars)
+                .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
+                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .subscribe({
+//                    u -> setupData(u)
+                }, {
+//                    e -> setupOfflineData(getOpFormIntent())
+                })
+        val text = full_note.text.toString()
+        if(passToNote || text != ""){
+            retrofit.saveNote(getOpFormIntent()!!, full_note.text.toString())
+                    .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
+                    .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                    .subscribe({
+                        //                    u -> setupData(u)
+                    }, {
+                        //                    e -> setupOfflineData(getOpFormIntent())
+                    })
+        }
     }
 
     fun changeReco(){
@@ -47,13 +76,40 @@ class FullLogActivity : AbstractActivity() {
                 .subscribe({
                     u -> setupData(u)
                 }, {
-                    e ->
+                    e -> setupOfflineData(getOpFormIntent())
                 })
     }
-    
+
+    private fun  setupOfflineData(opFormIntent: String?) {
+        full_title.text = opFormIntent!!
+        preapreSpinner()
+    }
+
     fun preapreSpinner(){
-        full_logtype.setItems(listOf("ok", "nie"))
-        full_logtype.setOnItemSelectedListener { view, position, id, item ->  }
+        val list = listOf(
+                getString(R.string.found_it),
+                getString(R.string.will_attend),
+                getString(R.string.attended),
+                getString(R.string.comment),
+                getString(R.string.didnt_fint_it))
+        full_logtype.setItems(list)
+    }
+
+    fun preapreSpinner(event : Boolean){
+        if(event) {
+            val list = listOf(
+                    getString(R.string.will_attend),
+                    getString(R.string.attended),
+                    getString(R.string.comment))
+            full_logtype.setItems(list)
+        }
+        else{
+            val list = listOf(
+                    getString(R.string.found_it),
+                    getString(R.string.comment),
+                    getString(R.string.didnt_fint_it))
+            full_logtype.setItems(list)
+        }
     }
 
     private fun  setupData(u: Cache) {
@@ -64,6 +120,11 @@ class FullLogActivity : AbstractActivity() {
             full_password.visibility= View.GONE
             full_send_password.visibility = View.GONE
             full_text_send_password.visibility= View.GONE
+        }
+        if(u.type=="Event")
+        {
+            full_image_reco.visibility= View.GONE
+            full_text_reco.visibility= View.GONE
         }
         else{
             preapreSaveNoteListener()
@@ -78,6 +139,7 @@ class FullLogActivity : AbstractActivity() {
             "Event" ->          full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.event))
             "Virtual" ->        full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.virtual))
         }
+        preapreSpinner(u.type=="Event")
     }
 
     private fun preapreSaveNoteListener() {

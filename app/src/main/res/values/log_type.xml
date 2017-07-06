@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="will_attend">Will attend</string>
+    <string name="attended">Attended</string>
+    <string name="comment">Comment</string>
+    <string name="found_it">Found it</string>
+    <string name="didnt_fint_it">Didn\'t find</string>
+</resources>
