@@ -8,27 +8,71 @@ import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
 import com.shhatrat.loggerek.models.Cache
 import com.squareup.picasso.Picasso
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.android.synthetic.main.activity_full_log.*
 import kotlinx.android.synthetic.main.activity_full_log_fab.*
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class FullLogActivity : AbstractActivity() {
 
     val retrofit by lazy { getKoin().get<Api>() }
     var reco = false
     var passToNote = true
-    var date : String = System.currentTimeMillis().toString()
+    var date : String = getData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_full_log_fab)
         downloadCache()
         preapreListeners()
+        preapreData()
+    }
+
+    private fun preapreData() {
+        val c = Calendar.getInstance()
+        val df = SimpleDateFormat("yyyy-MM-dd\tHH:mm")
+        full_date.text = df.format(c.time)
+    }
+
+    private fun getData(): String{
+        val c = Calendar.getInstance()
+        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+        return df.format(c.time)
     }
 
     private fun preapreListeners() {
         full_image_reco.setOnClickListener { changeReco() }
         full_text_reco.setOnClickListener { changeReco()  }
         full_fab.setOnClickListener { fabListener() }
+        full_date.setOnClickListener { showDataPicker()  }
+    }
+
+    private fun showDataPicker() {
+        val now = Calendar.getInstance()
+        val dpd = DatePickerDialog.newInstance(
+                DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth -> run { date ="$year-$monthOfYear-$dayOfMonth" ; showTimePicker() } },
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        )
+        dpd.show(fragmentManager, "Datepickerdialog")
+    }
+//    yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+    private fun showTimePicker(){
+    val now = Calendar.getInstance()
+    val dpd = TimePickerDialog.newInstance(
+            TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute, second -> run {
+                full_date.text = "$date\t$hourOfDay:$minute"
+                date = "$date'T'$hourOfDay:$minute:$second"
+            } },
+            now.get(Calendar.HOUR_OF_DAY),
+            now.get(Calendar.MINUTE),
+            true
+    )
+    dpd.show(fragmentManager, "Datepickerdialog")
     }
 
     fun fabListener(){
@@ -37,7 +81,8 @@ class FullLogActivity : AbstractActivity() {
                 full_log.text.toString(),
                 date,
                 reco,
-                full_rating.numStars)
+                full_rating.rating.toInt(),
+                full_password.text.toString())
                 .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                 .subscribe({
@@ -140,6 +185,20 @@ class FullLogActivity : AbstractActivity() {
             "Virtual" ->        full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.virtual))
         }
         preapreSpinner(u.type=="Event")
+        preapreRecomendationListener(u.type=="Event")
+    }
+
+    private fun preapreRecomendationListener(event : Boolean) {
+        full_logtype.setOnItemSelectedListener { view, position, id, item ->
+            if(item == getString(R.string.found_it) && !event){
+                full_image_reco.visibility = View.VISIBLE
+                full_text_reco.visibility = View.VISIBLE
+            }else
+            {
+                full_image_reco.visibility = View.GONE
+                full_text_reco.visibility = View.GONE
+            }
+        }
     }
 
     private fun preapreSaveNoteListener() {
@@ -159,7 +218,7 @@ class FullLogActivity : AbstractActivity() {
 
     fun  preapreGoogleMapsLink(home_location: String?): String{
         val first = "https://maps.googleapis.com/maps/api/staticmap?center="
-        val second = "&markers=color:red%7Clabel:C%7C${home_location!!.replace("|", ",")}&zoom=14&size=500x200&maptype=roadmap&key="
+        val second = "&markers=color:red%7Clabel:%7C${home_location!!.replace("|", ",")}&zoom=14&size=500x200&maptype=roadmap&key="
         val key = getString(R.string.google_maps_key)
         if(!home_location.isNullOrBlank())
             return "$first${home_location!!.replace("|", ",")}$second$key"

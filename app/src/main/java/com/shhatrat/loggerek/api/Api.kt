@@ -30,7 +30,8 @@ interface Api {
                  @Query("comment") comment :String,
                  @Query("when") date :String,
                  @Query("recommend") recomennded : Boolean,
-                 @Query("rating") rating :Int)
+                 @Query("rating") rating :Int,
+                 @Query("password") password : String)
     : Observable<Response<Log>>
 
     @GET("logs/submit")
