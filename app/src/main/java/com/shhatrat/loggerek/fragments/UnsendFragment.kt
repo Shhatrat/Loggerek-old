@@ -11,15 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.afollestad.materialdialogs.MaterialDialog
-
 import com.shhatrat.loggerek.R
-import com.shhatrat.loggerek.adapters.LogAdapter
 import com.shhatrat.loggerek.adapters.UnsendAdapter
-import com.shhatrat.loggerek.models.SingleLog
 import com.shhatrat.loggerek.models.Unsend
 import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTouchListener
 import io.realm.Realm
-import kotlinx.android.synthetic.main.fragment_log.*
 import kotlinx.android.synthetic.main.fragment_unsend.*
 
 
@@ -100,7 +96,6 @@ class UnsendFragment : Fragment() {
     }
 
     private fun tryAgain(unsend: Unsend) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 

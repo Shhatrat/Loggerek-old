@@ -7,6 +7,7 @@ import android.view.View
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
 import com.shhatrat.loggerek.models.Cache
+import com.shhatrat.loggerek.models.LogRequest
 import com.squareup.picasso.Picasso
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -86,6 +87,14 @@ class FullLogActivity : AbstractActivity() {
     }
 
     fun fabListener(){
+        val request = LogRequest(getOpFormIntent()!!,
+                full_logtype.getItems<String>().get(full_logtype.selectedIndex),
+                full_log.text.toString(),
+                date,
+                reco,
+                getRating(),
+                full_password.text.toString())
+
         retrofit.logEntryFull(getOpFormIntent()!!,
                 full_logtype.getItems<String>().get(full_logtype.selectedIndex),
                 full_log.text.toString(),
@@ -96,21 +105,20 @@ class FullLogActivity : AbstractActivity() {
                 .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                 .subscribe({
-//                    u -> setupData(u)
-                }, {
-//                    e -> setupOfflineData(getOpFormIntent())
-                })
+                    u -> success(request, u)}, {
+                    e -> error(request, e)})
         val text = full_note.text.toString()
-        if(passToNote || text != ""){
-            retrofit.saveNote(getOpFormIntent()!!, full_note.text.toString())
-                    .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
-                    .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
-                    .subscribe({
-                        //                    u -> setupData(u)
-                    }, {
-                        //                    e -> setupOfflineData(getOpFormIntent())
-                    })
-        }
+//todo
+//        if(passToNote || text != ""){
+//            retrofit.saveNote(getOpFormIntent()!!, full_note.text.toString())
+//                    .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
+//                    .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+//                    .subscribe({
+//                        //                    u -> setupData(u)
+//                    }, {
+//                        //                    e -> setupOfflineData(getOpFormIntent())
+//                    })
+//        }
     }
 
     private fun  getRating(): Int? {
@@ -207,13 +215,17 @@ class FullLogActivity : AbstractActivity() {
     private fun preapreRecomendationListener(event : Boolean) {
         full_logtype.setOnItemSelectedListener { view, position, id, item ->
             if(item == getString(R.string.found_it) && !event){
+                full_rating.visibility = View.VISIBLE
                 full_image_reco.visibility = View.VISIBLE
                 full_text_reco.visibility = View.VISIBLE
             }else
             {
+                full_rating.visibility = View.GONE
                 full_image_reco.visibility = View.GONE
                 full_text_reco.visibility = View.GONE
             }
+            if(item == getString(R.string.attended) && event)
+                full_rating.visibility = View.VISIBLE
         }
     }
 
