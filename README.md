@@ -11,8 +11,11 @@ https://opencaching.pl/okapi/
 # Technologies used
 - 100% Kotlin
 - Retrofit2 and OkHttp
+- Realm
 - RxJava2
 - Koin (DI)
+- Material design patterns
+- Many Android stuff like Fragments, Setting Preferences, Recyclerviews, View Pagers...
 - and more... 
 
 # Usage (for developers)
@@ -23,4 +26,8 @@ https://opencaching.pl/okapi/signup.html
 ```
     <string name="consumer_key">set_your_key</string>
     <string name="consumer_secret">set_your_key</string>
+```
+- google maps key also in [strings.xml](../master/app/src/main/res/values/strings.xml) file. 
+```
+    <string name="google_maps_key">set_your_key</string>
 ```
