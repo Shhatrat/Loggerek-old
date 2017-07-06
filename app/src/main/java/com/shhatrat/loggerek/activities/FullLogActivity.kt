@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat
 import android.view.View
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
+import com.shhatrat.loggerek.api.LogHandler
 import com.shhatrat.loggerek.models.Cache
 import com.shhatrat.loggerek.models.LogRequest
 import com.squareup.picasso.Picasso
@@ -109,6 +110,10 @@ class FullLogActivity : AbstractActivity() {
                 getRating(),
                 full_password.text.toString())
 
+        var note : String? = null
+        if(passToNote || !full_password.text.isNullOrEmpty())
+            note = full_password.text.toString()
+
         retrofit.logEntryFull(getOpFormIntent()!!,
                 full_logtype.getItems<String>().get(full_logtype.selectedIndex),
                 full_log.text.toString(),
@@ -119,20 +124,19 @@ class FullLogActivity : AbstractActivity() {
                 .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                 .subscribe({
-                    u -> success(request, u)}, {
-                    e -> error(request, e)})
-        val text = full_note.text.toString()
-//todo
-//        if(passToNote || text != ""){
-//            retrofit.saveNote(getOpFormIntent()!!, full_note.text.toString())
-//                    .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
-//                    .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
-//                    .subscribe({
-//                        //                    u -> setupData(u)
-//                    }, {
-//                        //                    e -> setupOfflineData(getOpFormIntent())
-//                    })
-//        }
+                    u -> LogHandler(this).success(request, u, note )}, {
+                    e -> LogHandler(this).error(request, e)})
+
+        if(!full_password.text.isNullOrEmpty()){
+            retrofit.saveNote(getOpFormIntent()!!, full_note.text.toString())
+                    .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
+                    .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                    .subscribe({
+                        //                    u -> setupData(u)
+                    }, {
+                        //                    e -> setupOfflineData(getOpFormIntent())
+                    })
+        }
     }
 
     private fun  getRating(): Int? {
@@ -246,6 +250,8 @@ class FullLogActivity : AbstractActivity() {
             setReco()
             val list  = full_logtype.getItems<String>()
             list.forEachIndexed { index, s -> if(parcel.logtype?:"" == s) full_logtype.selectedIndex = index }
+
+            full_password.setText(parcel.password?:"")
         }
     }
 

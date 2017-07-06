@@ -15,8 +15,12 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.activities.FullLogActivity
 import com.shhatrat.loggerek.adapters.UnsendAdapter
+import com.shhatrat.loggerek.api.Api
+import com.shhatrat.loggerek.api.LogHandler
 import com.shhatrat.loggerek.models.Unsend
 import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTouchListener
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_unsend.*
 
@@ -99,9 +103,21 @@ class UnsendFragment : Fragment() {
            startActivity(intent)
     }
 
+    val retrofit by lazy { activity.getKoin().get<Api>() }
+
+
     private fun tryAgain(unsend: Unsend) {
-//todo
-    }
+        retrofit.logEntry(unsend.cacheOp!!, unsend.logtype!!, unsend.log!!)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    u -> run{
+                    LogHandler(activity).success(unsend.getParcel(), u)
+                }}, {
+                    e ->
+                    run {
+                        LogHandler(activity).error(unsend.getParcel(), e) }
+                })    }
 
 
     private fun  removeFromDb(cacheOp: String, log : String, timestamp : Long) {

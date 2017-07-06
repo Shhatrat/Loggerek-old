@@ -7,6 +7,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
+import com.shhatrat.loggerek.api.LogHandler
 import com.shhatrat.loggerek.fragments.LogFragment
 import com.shhatrat.loggerek.models.LogRequest
 import com.shhatrat.loggerek.models.SingleLog
@@ -94,17 +95,14 @@ class LogActivity : AbstractActivity() {
                 .subscribe({
                     u -> run{
                     f_progress.visibility = View.GONE
-                    success(logRequest, u)
+                    LogHandler(this).success(logRequest, u)
                 }}, {
                     e ->
                     run {
                         f_progress.visibility = View.GONE
-                        error(logRequest, e) }
+                        LogHandler(this).error(logRequest, e) }
                 })
     }
-
-
-
 
     private fun hideFabsShowProgress(){
         f_mylog.visibility = GONE
