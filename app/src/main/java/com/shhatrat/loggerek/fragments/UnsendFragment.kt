@@ -2,6 +2,7 @@ package com.shhatrat.loggerek.fragments
 
 
 import android.app.getKoin
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -11,7 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.afollestad.materialdialogs.MaterialDialog
-import com.shhatrat.loggerek.R
+import com.shhatrat.loggerek.activities.FullLogActivity
 import com.shhatrat.loggerek.adapters.UnsendAdapter
 import com.shhatrat.loggerek.models.Unsend
 import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTouchListener
@@ -92,10 +93,13 @@ class UnsendFragment : Fragment() {
     }
 
     private fun editLog(unsend: Unsend) {
-            print("dd")
+        val intent = Intent(this@UnsendFragment.activity, FullLogActivity::class.java)
+        intent.putExtra("unsend", unsend.getParcel())
+           startActivity(intent)
     }
 
     private fun tryAgain(unsend: Unsend) {
+//todo
     }
 
 

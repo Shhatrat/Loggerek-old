@@ -4,7 +4,6 @@ import android.app.getKoin
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.View
-import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
 import com.shhatrat.loggerek.models.Cache
 import com.shhatrat.loggerek.models.LogRequest
@@ -27,9 +26,23 @@ class FullLogActivity : AbstractActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_full_log_fab)
-        downloadCache()
+        if(intentWithCache())
+            loadCache()
+        else {
+            checkIntent()
+            downloadCache(getOpFormIntent()!!)
+        }
         preapreListeners()
         preapreData()
+    }
+
+    private fun loadCache() {
+        val parcel = intent.getParcelableExtra<LogRequest>("unsend")
+        downloadCache(parcel.cache_code!!)
+    }
+
+    private fun  intentWithCache(): Boolean {
+        return intent.getParcelableExtra<LogRequest>("unsend") != null
     }
 
     private fun preapreData() {
@@ -137,9 +150,16 @@ class FullLogActivity : AbstractActivity() {
         }
     }
 
-    fun downloadCache(){
+    fun setReco(){
+        if(reco)
+            full_image_reco.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_clear_white_24dp))
+        else
+            full_image_reco.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_done_white))
+    }
+
+    fun downloadCache(op : String){
         getOpFormIntent()
-        retrofit.geocache(getOpFormIntent()!!, "name|location|type|recommendations|founds|req_passwd".getUTF8String())
+        retrofit.geocache(op, "name|location|type|recommendations|founds|req_passwd".getUTF8String())
                 .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                 .subscribe({
@@ -152,6 +172,7 @@ class FullLogActivity : AbstractActivity() {
     private fun  setupOfflineData(opFormIntent: String?) {
         full_title.text = opFormIntent!!
         preapreSpinner()
+        loadData()
     }
 
     fun preapreSpinner(){
@@ -210,6 +231,21 @@ class FullLogActivity : AbstractActivity() {
         }
         preapreSpinner(u.type=="Event")
         preapreRecomendationListener(u.type=="Event")
+        loadData()
+    }
+
+    private fun loadData() {
+        if(intentWithCache()) {
+            val parcel = intent.getParcelableExtra<LogRequest>("unsend")
+            full_log.setText(parcel.comment ?: "")
+            val rating = parcel.rating ?: 0
+            full_rating.rating = rating.toFloat()
+
+            reco = parcel.recommend ?: false
+            setReco()
+            val list  = full_logtype.getItems<String>()
+            list.forEachIndexed { index, s -> if(parcel.logtype?:"" == s) full_logtype.selectedIndex = index }
+        }
     }
 
     private fun preapreRecomendationListener(event : Boolean) {

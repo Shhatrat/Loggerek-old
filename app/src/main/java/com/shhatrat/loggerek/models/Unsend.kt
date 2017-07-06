@@ -17,4 +17,7 @@ open class Unsend : RealmObject(){
     var recommend : Boolean? =null
     var rating : Int? =null
     var password : String? =null
+    fun  getParcel(): LogRequest {
+        return LogRequest(cacheOp, logtype, log , logDate, recommend, rating, password)
+    }
 }

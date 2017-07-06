@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
 import com.shhatrat.loggerek.fragments.LogFragment
 import com.shhatrat.loggerek.models.LogRequest
@@ -25,7 +24,6 @@ class LogActivity : AbstractActivity() {
         setContentView(R.layout.activity_log)
         window.decorView.setBackgroundResource(android.R.color.transparent)
 
-        checkConfiguration()
         checkIntent()
 
         val intent = intent
