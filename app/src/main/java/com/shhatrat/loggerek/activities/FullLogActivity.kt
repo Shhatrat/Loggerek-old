@@ -53,20 +53,24 @@ class FullLogActivity : AbstractActivity() {
     private fun showDataPicker() {
         val now = Calendar.getInstance()
         val dpd = DatePickerDialog.newInstance(
-                DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth -> run { date ="$year-$monthOfYear-$dayOfMonth" ; showTimePicker() } },
+                DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth -> run { date ="$year-${monthOfYear.preapreZeros()}-${dayOfMonth.preapreZeros()}" ; showTimePicker() } },
                 now.get(Calendar.YEAR),
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH)
         )
         dpd.show(fragmentManager, "Datepickerdialog")
     }
-//    yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+
     private fun showTimePicker(){
     val now = Calendar.getInstance()
     val dpd = TimePickerDialog.newInstance(
             TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute, second -> run {
                 full_date.text = "$date\t$hourOfDay:$minute"
-                date = "$date'T'$hourOfDay:$minute:$second"
+
+                val c = Calendar.getInstance()
+                val df = SimpleDateFormat(".SSSXXX")
+
+                date = "${date}T${hourOfDay.preapreZeros()}:${minute.preapreZeros()}:${second.preapreZeros()}${df.format(c.time)}"
             } },
             now.get(Calendar.HOUR_OF_DAY),
             now.get(Calendar.MINUTE),
@@ -75,13 +79,19 @@ class FullLogActivity : AbstractActivity() {
     dpd.show(fragmentManager, "Datepickerdialog")
     }
 
+    fun Int.preapreZeros():String{
+        if(this.toString().length==1)
+            return "0$this"
+        return this.toString()
+    }
+
     fun fabListener(){
         retrofit.logEntryFull(getOpFormIntent()!!,
                 full_logtype.getItems<String>().get(full_logtype.selectedIndex),
                 full_log.text.toString(),
                 date,
                 reco,
-                full_rating.rating.toInt(),
+                getRating(),
                 full_password.text.toString())
                 .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
@@ -101,6 +111,12 @@ class FullLogActivity : AbstractActivity() {
                         //                    e -> setupOfflineData(getOpFormIntent())
                     })
         }
+    }
+
+    private fun  getRating(): Int? {
+        if(full_rating.rating.toInt()==0)
+            return null
+        return full_rating.rating.toInt()
     }
 
     fun changeReco(){

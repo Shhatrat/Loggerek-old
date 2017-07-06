@@ -25,13 +25,13 @@ interface Api {
                 : Observable<NoteResponse>
 
     @GET("logs/submit")
-    fun logEntryFull(@Query("cache_code") cache_code :String,
-                 @Query("logtype") logtype :String,
-                 @Query("comment") comment :String,
-                 @Query("when") date :String,
-                 @Query("recommend") recomennded : Boolean,
-                 @Query("rating") rating :Int,
-                 @Query("password") password : String)
+    fun logEntryFull(@Query("cache_code") cache_code:String,
+                     @Query("logtype") logtype:String,
+                     @Query("comment") comment:String,
+                     @Query("when") date:String,
+                     @Query("recommend") recomennded: Boolean,
+                     @Query("rating") rating: Int?,
+                     @Query("password") password: String)
     : Observable<Response<Log>>
 
     @GET("logs/submit")
