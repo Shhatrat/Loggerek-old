@@ -4,6 +4,7 @@ import android.app.getKoin
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.View
+import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
 import com.shhatrat.loggerek.models.Cache
 import com.shhatrat.loggerek.models.LogRequest

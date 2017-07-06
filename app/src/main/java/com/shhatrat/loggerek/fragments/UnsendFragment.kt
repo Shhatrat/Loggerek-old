@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.afollestad.materialdialogs.MaterialDialog
+import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.activities.FullLogActivity
 import com.shhatrat.loggerek.adapters.UnsendAdapter
 import com.shhatrat.loggerek.models.Unsend
