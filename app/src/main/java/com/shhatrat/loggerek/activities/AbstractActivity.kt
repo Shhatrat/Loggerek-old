@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
+import com.kenny.snackbar.SnackBarItem
+import com.kenny.snackbar.SnackBarListener
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.models.*
 import de.mateware.snacky.Snacky
@@ -18,7 +20,6 @@ abstract  class AbstractActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkConfiguration()
-        checkIntent()
     }
 
     fun AppCompatActivity.checkIntent() {
@@ -57,49 +58,62 @@ abstract  class AbstractActivity : AppCompatActivity() {
     fun success(request : LogRequest , u : Response<Log>) {
         if(!u.isSuccessful) {
             saveLogtoDb(request, u.message(), u.body()!!.message)
+            showSnackbar(u)
             return
         }
 
-        if(u.message() == OcResponse.SUCESS.message){
-            val sn = Snacky.builder().setActivty(this).setText(u.body()!!.message).setDuration(2000)
-            val callback = sn.build()
-            callback.addCallback(object : Snackbar.Callback() {
-                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                    super.onDismissed(transientBottomBar, event)
-                    finish()
-                }
-            })
-            sn.success().show()
+        if(u.body()!!.message == OcResponse.SUCESS.message){
+            showSnackbar(u)
             return
         }
 
         if(u.body()!!.message == OcResponse.ALREADY_CUBMITTED.message)
         {
-            val sn = Snacky.builder().setActivty(this).setText(u.body()!!.message).setDuration(2000)
-            val callback = sn.build()
-            callback.addCallback(object : Snackbar.Callback() {
-                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                    super.onDismissed(transientBottomBar, event)
-                    finish()
-                }
-            })
-            sn.error().show()
+            showSnackbar(u)
             saveLogtoDb(request, u.message(), u.body()!!.message)
             return
         }
 
         if( u.body()!!.message == OcResponse.PASSWORD.message){
-            val sn = Snacky.builder().setActivty(this).setText(u.body()!!.message).setDuration(2000)
-            val callback = sn.build()
-            callback.addCallback(object : Snackbar.Callback() {
-                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                    super.onDismissed(transientBottomBar, event)
-                    startActivity(Intent(this@AbstractActivity, FullLogActivity::class.java))
-                    //add bundle
-                }
-            })
+            SnackBarItem.Builder(this)
+                    .setMessage(u.body()!!.message)
+                    .setSnackBarMessageColorResource(R.color.md_black_1000)
+                    .setSnackBarBackgroundColorResource(R.color.md_white_1000)
+                    .setInterpolatorResource(android.R.interpolator.accelerate_decelerate)
+                    .setDuration(1500)
+                    .setSnackBarListener(object : SnackBarListener {
+                        override fun onSnackBarStarted(`object`: Any?) {
+                        }
+
+                        override fun onSnackBarFinished(`object`: Any?, actionPressed: Boolean) {
+                            val intent = Intent(this@AbstractActivity, FullLogActivity::class.java)
+                            intent.putExtra("unsend", request)
+                            startActivity(intent)
+                            finish()
+                        }
+                    })
+                    .show()
             saveLogtoDb(request, u.message(), u.body()!!.message)
+            return
         }
+    }
+
+    private fun showSnackbar(u: Response<Log>) {
+        SnackBarItem.Builder(this)
+                .setMessage(u.body()!!.message)
+                .setSnackBarMessageColorResource(R.color.md_black_1000)
+                .setSnackBarBackgroundColorResource(R.color.md_white_1000)
+                .setInterpolatorResource(android.R.interpolator.accelerate_decelerate)
+                .setDuration(1500)
+                .setSnackBarListener(object : SnackBarListener {
+                    override fun onSnackBarStarted(`object`: Any?) {
+                    }
+
+                    override fun onSnackBarFinished(`object`: Any?, actionPressed: Boolean) {
+                        finish()
+                    }
+                })
+                .show()
     }
 
     fun error(request : LogRequest,  u: Throwable) {
