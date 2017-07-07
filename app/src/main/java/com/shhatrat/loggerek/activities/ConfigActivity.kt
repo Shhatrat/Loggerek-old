@@ -95,7 +95,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
     fun logUser() {
             android.os.AsyncTask.execute {
                 o!!.prepareOAuth(this)
-            }
+        }
     }
 
     override fun onResume() {
@@ -183,7 +183,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
 
     fun finishOAuth(dat : String) {
         android.os.AsyncTask.execute {
-            o!!.okHttpPin(dat)
+            o!!.okHttpPin(dat, this)
             ret.getUsername(parameters.getUTF8String())
                     .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
                     .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
@@ -196,11 +196,11 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                             replaceFragment(StatusFragment.getInstance())
                         }
                     }, {
-                        e -> android.util.Log.d("apiLog", e.message)})
-
+                        e ->
+                        android.util.Log.d("apiLog", e.message)
+                    })
         }
     }
-
 
     fun logout(){
         realm.deteleAllWithoutMagic()
