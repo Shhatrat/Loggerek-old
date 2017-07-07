@@ -55,7 +55,7 @@ class FullLogActivity : AbstractActivity() {
 
     private fun getData(): String{
         val c = Calendar.getInstance()
-        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
         return df.format(c.time)
     }
 
@@ -84,7 +84,7 @@ class FullLogActivity : AbstractActivity() {
                 full_date.text = "$date\t$hourOfDay:$minute"
 
                 val c = Calendar.getInstance()
-                val df = SimpleDateFormat(".SSSXXX")
+                val df = SimpleDateFormat(".SSSZ")
 
                 date = "${date}T${hourOfDay.preapreZeros()}:${minute.preapreZeros()}:${second.preapreZeros()}${df.format(c.time)}"
             } },
