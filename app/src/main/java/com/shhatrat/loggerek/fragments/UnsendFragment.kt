@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.fragment_unsend.*
 class UnsendFragment : Fragment() {
 
     val realm by lazy{activity.getKoin().get<Realm>()}
+    val retrofit by lazy { activity.getKoin().get<Api>() }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -46,20 +47,18 @@ class UnsendFragment : Fragment() {
         unsend_recycleview.layoutManager = LinearLayoutManager(this.context)
         unsend_recycleview.hasFixedSize()
         unsend_recycleview.setOnTouchListener(preapreListener(unsend_recycleview))
-        unsend_recycleview.adapter = UnsendAdapter(this.activity, getList())
+        unsend_recycleview.adapter = UnsendAdapter(this.activity, getListFromDB())
     }
 
     fun preapreListener(recyclerView : RecyclerView): SwipeDismissRecyclerViewTouchListener? {
-
         return SwipeDismissRecyclerViewTouchListener.Builder(
                 recyclerView,
                 object : SwipeDismissRecyclerViewTouchListener.DismissCallbacks{
                     override fun onDismiss(view: View?) {
                         val id = recyclerView.getChildAdapterPosition(view)
                         val adapter =  recyclerView.adapter as UnsendAdapter
-                        removeFromDb(adapter.lists[id].cacheOp!!, adapter.lists[id].log!!, adapter.lists[id].timestamp!!)
-                        adapter.lists.removeAt(id)
-                        unsend_recycleview.adapter = UnsendAdapter(this@UnsendFragment.activity, getList())
+                        view?.visibility = View.GONE
+                        adapter.removeAt(id)
                     }
 
                     override fun canDismiss(p0: Int): Boolean {
@@ -84,7 +83,7 @@ class UnsendFragment : Fragment() {
                 .neutralText("delete")
                 .neutralColor(ContextCompat.getColor(context, R.color.md_red_400))
                 .onNeutral { dialog, which -> run {
-                    removeFromDb(unsend.cacheOp!!, unsend.log!!, unsend.timestamp!!)
+//                    removeFromDb(unsend.cacheOp!!, unsend.log!!, unsend.timestamp!!)
                 }}
                 .items(listOf("Edit log", "Try again"))
                 .itemsCallbackSingleChoice(-1, MaterialDialog.ListCallbackSingleChoice { dialog, itemView, which, text ->
@@ -103,9 +102,6 @@ class UnsendFragment : Fragment() {
            startActivity(intent)
     }
 
-    val retrofit by lazy { activity.getKoin().get<Api>() }
-
-
     private fun tryAgain(unsend: Unsend) {
         retrofit.logEntry(unsend.cacheOp!!, unsend.logtype!!, unsend.log!!)
                 .subscribeOn(Schedulers.newThread())
@@ -119,18 +115,7 @@ class UnsendFragment : Fragment() {
                         LogHandler(activity).error(unsend.getParcel(), e) }
                 })    }
 
-
-    private fun  removeFromDb(cacheOp: String, log : String, timestamp : Long) {
-        realm.beginTransaction()
-        realm.where(Unsend::class.java)
-                .equalTo("cacheOp", cacheOp)
-                .equalTo("log", log)
-                .equalTo("timestamp", timestamp)
-                .findAll().deleteAllFromRealm()
-        realm.commitTransaction()
-    }
-
-    private fun  getList(): ArrayList<Unsend> {
+    private fun getListFromDB(): ArrayList<Unsend> {
      return   ArrayList(realm.where(Unsend::class.java).findAll().toList())
     }
 

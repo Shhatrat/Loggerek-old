@@ -3,7 +3,7 @@
 
 
     <PreferenceCategory
-        android:title="Quick Log">
+        android:title="Saving">
         <CheckBoxPreference
             android:key="quick_save"
             android:summary="when sening failed"
@@ -20,13 +20,6 @@
             android:title="Save password"
             app:defaultValue="true"
             app:key="normal_save_password" />
-
-        <CheckBoxPreference
-            android:key="normal_save"
-            android:summary="if no Internet connection"
-            android:title="Save log"
-            app:defaultValue="true"
-            app:key="normal_save" />
     </PreferenceCategory>
     <PreferenceCategory
 
@@ -34,18 +27,21 @@
 
         <CheckBoxPreference
             android:key="mix_good"
+            app:defaultValue="true"
             android:summary="if is set more than 1"
             android:title="Mix good log"
             app:key="mix_good" />
 
         <CheckBoxPreference
             android:key="mix_bad"
+            app:defaultValue="true"
             android:summary="if is set more than 1"
             android:title="Mix bad log"
             app:key="mix_bad" />
 
         <CheckBoxPreference
             android:key="mix_default"
+            app:defaultValue="true"
             android:summary=" if is set more than 1"
             android:title="Mix default log"
             app:key="mix_default" />

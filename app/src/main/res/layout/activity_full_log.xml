@@ -141,7 +141,7 @@
 
             <Button
                 android:id="@+id/full_date"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:textColor="@color/md_white_1000"
                 android:background="@color/primary_dark"
                 android:layout_height="wrap_content"
@@ -220,7 +220,7 @@
                 android:layout_width="336dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="7dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/full_note" />
@@ -255,7 +255,9 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toRightOf="@+id/full_send_password"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/full_password" />
+                app:layout_constraintTop_toBottomOf="@+id/full_password"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp" />
 
 
         </android.support.constraint.ConstraintLayout>

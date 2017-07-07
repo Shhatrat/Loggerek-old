@@ -1,6 +1,7 @@
 package com.shhatrat.loggerek.activities
 
 import android.app.getKoin
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.View
@@ -20,6 +21,7 @@ import java.util.*
 
 class FullLogActivity : AbstractActivity() {
 
+    val sharedPrefs by lazy{getKoin().get<SharedPreferences>()}
     val retrofit by lazy { getKoin().get<Api>() }
     var reco = false
     var passToNote = true
@@ -28,6 +30,7 @@ class FullLogActivity : AbstractActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_full_log_fab)
+        preapreSaveNote()
         if(intentWithCache())
             loadCache()
         else {
@@ -57,6 +60,11 @@ class FullLogActivity : AbstractActivity() {
         val c = Calendar.getInstance()
         val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
         return df.format(c.time)
+    }
+
+    private fun preapreSaveNote(){
+        passToNote = sharedPreferences.getBoolean("normal_save_password", false)
+        changePass()
     }
 
     private fun preapreListeners() {
