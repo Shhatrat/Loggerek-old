@@ -63,7 +63,7 @@ class FullLogActivity : AbstractActivity() {
     }
 
     private fun preapreSaveNote(){
-        passToNote = sharedPreferences.getBoolean("normal_save_password", false)
+        passToNote = !sharedPreferences.getBoolean("normal_save_password", false)
         changePass()
     }
 

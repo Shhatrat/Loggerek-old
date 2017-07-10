@@ -48,6 +48,7 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
     val DEFAULT = "Default"
     val SETTINGS = "Settings"
     val LOGOUT = "Logout"
+    val HELP = "Help"
 
 
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
@@ -136,16 +137,19 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
                 .withOnDrawerItemClickListener { _, _, drawerItem ->  changeFragment(drawerItem) }
                 .addStickyDrawerItems(
                         PrimaryDrawerItem().withName(SETTINGS).withTag(SETTINGS).withIcon(R.drawable.ic_settings_white_24dp),
+                        PrimaryDrawerItem().withName(HELP).withTag(HELP).withIcon(R.drawable.abc_ic_menu_selectall_mtrl_alpha),
                         PrimaryDrawerItem().withName(LOGOUT).withTag(LOGOUT).withIcon(R.drawable.ic_exit_to_app_white_24dp))
                 .build()
     }
 
     fun changeFragment(drawerItem: IDrawerItem<*, *>?): Boolean{
+        if(drawerItem!!.tag == HELP)
+            startActivity(Intent(this, IntroActivity::class.java))
         if(!isUserLogged())
             showTip()
         else
             {
-                toolbar.title = "${getString(R.string.app_name)} - ${drawerItem!!.tag}"
+                toolbar.title = "${getString(R.string.app_name)} - ${drawerItem.tag}"
                 if(drawerItem.tag == GOOD)
                     replaceFragment(LogFragment.getInstance(LogFragment.Type.GOOD))
                 if(drawerItem.tag == BAD)

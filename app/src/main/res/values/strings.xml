@@ -23,4 +23,27 @@
     <string name="add_account">Add account</string>
     <string name="set_code">Set code</string>
     <string name="thanks_for_cache">Dzieki za kesza</string>
+    <string name="t1">Firstly add account</string>
+    <string name="d1">using button</string>
+    <string name="t2">Get code</string>
+    <string name="t3">Back to application</string>
+    <string name="t4">Now you are logged</string>
+    <string name="t5">You can add own logs</string>
+    <string name="t6">There are 3 types of logs</string>
+    <string name="t7">Ok, now you can use loggerek, for example using C:geo</string>
+    <string name="t8">Or you can do it this way</string>
+    <string name="t9">Now choose quick log</string>
+    <string name="t10">Now chose one button</string>
+    <string name="t101">You can preapre "normal" log</string>
+    <string name="t11">You also can send note to cache</string>
+    <string name="d11">with own note, or password</string>
+    <string name="d10">with password, rating etc.</string>
+    <string name="d2">and copy it or remember ;)</string>
+    <string name="d3">and paste code to dialog</string>
+    <string name="d4">Great!</string>
+    <string name="d5">for quick logging!</string>
+    <string name="d6">Good, bad and default</string>
+    <string name="d7">click this link</string>
+    <string name="d8">result will be the same</string>
+    <string name="d101">log will be send automatically</string>
 </resources>
