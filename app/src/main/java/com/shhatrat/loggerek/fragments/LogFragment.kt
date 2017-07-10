@@ -4,7 +4,6 @@ package com.shhatrat.loggerek.fragments
 import android.app.getKoin
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -14,13 +13,9 @@ import android.view.ViewGroup
 import com.afollestad.materialdialogs.MaterialDialog
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.adapters.LogAdapter
-import com.shhatrat.loggerek.adapters.UnsendAdapter
 import com.shhatrat.loggerek.models.SingleLog
-import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTouchListener
-import io.reactivex.disposables.Disposable
 import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_log.*
-import kotlinx.android.synthetic.main.fragment_unsend.*
 
 class LogFragment : Fragment() {
 
