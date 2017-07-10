@@ -56,6 +56,7 @@ class UnsendAdapter (var c: Activity, var lists: ArrayList<Unsend>) : RecyclerVi
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+        (holder as ViewHolder).bindData(lists[position])
             retrofit.geocache(lists[position].cacheOp!!, "name".getUTF8String())
                     .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
                     .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
