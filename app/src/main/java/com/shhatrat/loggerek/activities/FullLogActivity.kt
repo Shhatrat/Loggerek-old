@@ -26,6 +26,7 @@ class FullLogActivity : AbstractActivity() {
     var reco = false
     var passToNote = true
     var date : String = getData()
+    var isPassword = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,6 +111,11 @@ class FullLogActivity : AbstractActivity() {
     }
 
     fun fabListener(){
+        if(isPassword && full_password.text.isNullOrEmpty()) {
+            full_password.setBackgroundColor(ContextCompat.getColor(this, R.color.md_red_700))
+            return
+        }
+        full_password.setBackgroundColor(ContextCompat.getColor(this, R.color.primary_dark))
         val request = LogRequest(getOpFormIntent()!!,
                 full_logtype.getItems<String>().get(full_logtype.selectedIndex),
                 full_log.text.toString(),
@@ -216,6 +222,7 @@ class FullLogActivity : AbstractActivity() {
     }
 
     private fun  setupData(u: Cache) {
+        isPassword = u.req_passwd
         full_title.text = u.name
         Picasso.with(this).load(preapreGoogleMapsLink(u.location)).into(full_map)
         full_text_reco.text = "Add recommendation (${u.recommendations}/${u.founds})"

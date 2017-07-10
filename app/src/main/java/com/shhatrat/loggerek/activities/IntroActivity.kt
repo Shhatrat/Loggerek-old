@@ -14,7 +14,6 @@ class IntroActivity : AppIntro2() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         init()
-        //todo finish
         addSlide(AppIntro2Fragment.newInstance(getString(R.string.t1), getString(R.string.d1), R.drawable.i1 , ContextCompat.getColor(this, R.color.material2)))
         addSlide(AppIntroFragment.newInstance(getString(R.string.t2), getString(R.string.d2), R.drawable.i2 , ContextCompat.getColor(this, R.color.material)))
         addSlide(AppIntroFragment.newInstance(getString(R.string.t3), getString(R.string.d3), R.drawable.i3 , ContextCompat.getColor(this, R.color.material2)))
@@ -28,7 +27,6 @@ class IntroActivity : AppIntro2() {
         addSlide(AppIntroFragment.newInstance(getString(R.string.t101) ,getString(R.string.d10) , R.drawable.i9, ContextCompat.getColor(this, R.color.material2)))
         addSlide(AppIntroFragment.newInstance(getString(R.string.t11) ,getString(R.string.d11) , R.drawable.i11, ContextCompat.getColor(this, R.color.material)))
         addSlide(o)
-
 
         showSkipButton(false)
         isProgressButtonEnabled = false

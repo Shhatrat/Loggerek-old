@@ -161,6 +161,7 @@
             <EditText
                 android:id="@+id/full_password"
                 android:layout_width="0dp"
+                android:background="@color/primary_dark"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
