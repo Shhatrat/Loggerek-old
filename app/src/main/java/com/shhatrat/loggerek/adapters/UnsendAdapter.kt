@@ -2,14 +2,21 @@ package com.shhatrat.loggerek.adapters
 
 import android.app.Activity
 import android.app.getKoin
+import android.content.Intent
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.afollestad.materialdialogs.MaterialDialog
 import com.shhatrat.loggerek.R
+import com.shhatrat.loggerek.activities.FullLogActivity
 import com.shhatrat.loggerek.activities.getUTF8String
+import com.shhatrat.loggerek.api.LogHandler
 import com.shhatrat.loggerek.models.Unsend
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.realm.Realm
 import kotlinx.android.synthetic.main.list_unsend_row.view.*
@@ -49,7 +56,6 @@ class UnsendAdapter (var c: Activity, var lists: ArrayList<Unsend>) : RecyclerVi
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
-        try {
             retrofit.geocache(lists[position].cacheOp!!, "name".getUTF8String())
                     .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
                     .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
@@ -59,9 +65,54 @@ class UnsendAdapter (var c: Activity, var lists: ArrayList<Unsend>) : RecyclerVi
                     }, {
                         (holder as ViewHolder).bindData(lists[position])
                     })
-        }catch (e : Throwable){
-            holder?.itemView?.visibility = View.GONE
-        }
+
+            holder?.itemView?.unsend_constraint_layout?.setOnClickListener {
+                showDialog(lists[position], position)
+            }
+            holder?.itemView?.unsend_row_fab?.setOnClickListener {
+                showDialog(lists[position], position)
+            }
+    }
+
+    private fun editLog(unsend: Unsend) {
+        val intent = Intent(c, FullLogActivity::class.java)
+        intent.putExtra("unsend", unsend.getParcel())
+        c.startActivity(intent)
+    }
+
+    private fun tryAgain(unsend: Unsend) {
+        retrofit.logEntry(unsend.cacheOp!!, unsend.logtype!!, unsend.log!!)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    u -> run{
+                    LogHandler(c).success(unsend.getParcel(), u)
+                }}, {
+                    e ->
+                    run {
+                        LogHandler(c).error(unsend.getParcel(), e) }
+                })    }
+
+    private fun  showDialog(unsend: Unsend, position: Int) {
+        MaterialDialog.Builder(c)
+                .title("Unsend log")
+                .content("Select action")
+                .negativeText("cancel")
+                .neutralText("delete")
+                .neutralColor(ContextCompat.getColor(c, R.color.md_red_400))
+                .onNeutral { dialog, which -> run {
+//                    removeFromDb(unsend.cacheOp!!, unsend.log!!, unsend.timestamp!!)
+                    removeAt(position)
+                }}
+                .items(listOf("Edit log", "Try again"))
+                .itemsCallbackSingleChoice(-1, MaterialDialog.ListCallbackSingleChoice { dialog, itemView, which, text ->
+                    if(text == "Edit log")
+                        editLog(unsend)
+                    if(text == "Try again")
+                        tryAgain(unsend)
+                    return@ListCallbackSingleChoice true
+                })
+                .show()
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

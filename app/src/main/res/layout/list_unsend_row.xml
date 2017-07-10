@@ -2,10 +2,11 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/unsend_constraint_layout"
     android:layout_width="match_parent"
-    android:background="@color/colorPrimary"
-    android:layout_marginBottom="6dp"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="6dp"
+    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
     <android.support.design.widget.FloatingActionButton

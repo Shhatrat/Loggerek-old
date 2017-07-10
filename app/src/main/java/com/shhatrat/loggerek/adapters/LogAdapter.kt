@@ -1,12 +1,15 @@
 package com.shhatrat.loggerek.adapters
 
 import android.content.Context
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.afollestad.materialdialogs.MaterialDialog
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.fragments.LogFragment
+import com.shhatrat.loggerek.models.Unsend
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.list_layout.view.*
@@ -19,7 +22,6 @@ class LogAdapter(var c: Context, var lists: ArrayList<String?>, var type : LogFr
         return lists
     }
 
-
     fun getClickListener(): Observable<String> {
         return clickSubject
     }
@@ -27,7 +29,7 @@ class LogAdapter(var c: Context, var lists: ArrayList<String?>, var type : LogFr
 
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? {
-        var v = LayoutInflater.from(c).inflate(R.layout.list_layout, parent, false)
+        val v = LayoutInflater.from(c).inflate(R.layout.list_layout, parent, false)
         return Item(v)
     }
 
