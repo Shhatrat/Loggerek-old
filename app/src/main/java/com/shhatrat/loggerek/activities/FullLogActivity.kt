@@ -1,7 +1,9 @@
 package com.shhatrat.loggerek.activities
 
 import android.app.getKoin
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.View
@@ -40,7 +42,16 @@ class FullLogActivity : AbstractActivity() {
         }
         preapreListeners()
         preapreData()
+        preapreOnClick(getOpFormIntent()!!)
     }
+
+    fun preapreOnClick(op : String){
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://opencaching.pl/$op"))
+        full_title.setOnClickListener {         ContextCompat.startActivity(this, browserIntent, null) }
+        full_map.setOnClickListener {         ContextCompat.startActivity(this, browserIntent, null) }
+        full_icon_type.setOnClickListener {         ContextCompat.startActivity(this, browserIntent, null) }
+    }
+
 
     private fun loadCache() {
         val parcel = intent.getParcelableExtra<LogRequest>("unsend")
@@ -56,6 +67,8 @@ class FullLogActivity : AbstractActivity() {
         val df = SimpleDateFormat("yyyy-MM-dd\tHH:mm")
         full_date.text = df.format(c.time)
     }
+
+
 
     private fun getData(): String{
         val c = Calendar.getInstance()
@@ -173,9 +186,9 @@ class FullLogActivity : AbstractActivity() {
 
     fun setReco(){
         if(reco)
-            full_image_reco.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_clear_white_24dp))
-        else
             full_image_reco.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_done_white))
+        else
+            full_image_reco.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_clear_white_24dp))
     }
 
     fun downloadCache(op : String){
