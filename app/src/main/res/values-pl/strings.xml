@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Loggerek</string>
+    <string name="action_settings">Ustawienia</string>
+    <string name="no_configured_user">Brak skonfigurowanego użytkownika!</string>
+    <string name="Loggerek_normal">Loggerek - normalny wpis</string>
+    <string name="Loggerek_quick">Loggerek - szybki wpis</string>
+    <string name="Loggerek_note">Loggerek - notatka</string>
+    <string name="note">Notatka</string>
+    <string name="sending_note_sucessfull">Wysyłanie notatki pomyślne</string>
+    <string name="loggerek_error">Loggerek - błąd</string>
+    <string name="ok">Ok</string>
+    <string name="please_wait">Proszę czekać</string>
+    <string name="sending">Wysyłanie…</string>
+    <string name="cancel">Anuluj</string>
+    <string name="add_note_to_cache">Dodaj notatkę do skrzynki</string>
+    <string name="send">Wyślij</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_account">Dodaj konto</string>
+    <string name="set_code">Wpisz kod</string>
+    <string name="thanks_for_cache">Dzieki za kesza</string>
+    <string name="t1">Najpierw dodaj konto</string>
+    <string name="d1">używając przycisku</string>
+    <string name="t2">Zapisz kod</string>
+    <string name="t3">Wróć do aplikacji</string>
+    <string name="t4">Teraz jesteś zalogowany</string>
+    <string name="t5">Możesz dodać własne logi</string>
+    <string name="t6">Są trzy typy szybkich logów</string>
+    <string name="t7">Teraz możesz używać Loggerka korzystając na przykład z C:geo</string>
+    <string name="t8">Lub możesz zrobić to w ten sposób</string>
+    <string name="t9">Teraz wybierz Loggerek - szybki wpis</string>
+    <string name="t10">Teraz wybierz jeden z przycisków</string>
+    <string name="t101">Możesz też zrobić "zwykły" log</string>
+    <string name="t11">Możesz tu również wysłać notatkę do skrzynki</string>
+    <string name="d11">Dodając ją samemu, lub zapisując autoamtycznie hasło do skrzynki</string>
+    <string name="d10">z hasłem, oceną itp</string>
+    <string name="d2">skopiuj go lub zapamiętaj ;)</string>
+    <string name="d3">wpisz je w oknie</string>
+    <string name="d4">Super!</string>
+    <string name="d5">do szybkiego logowania</string>
+    <string name="d6">Dobry, zły lub neutralny</string>
+    <string name="d7">kliknij na link</string>
+    <string name="d8">rezultat będzie ten sam</string>
+    <string name="d101">Log zostanie wysłany automatycznie</string>
+</resources>

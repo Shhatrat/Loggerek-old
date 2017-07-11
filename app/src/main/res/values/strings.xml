@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Loggerek</string>
     <string name="action_settings">Settings</string>
-    <string name="consumer_key">key</string>
-    <string name="consumer_secret">key</string>
     <string name="no_configured_user">No configured user!</string>
     <string name="Loggerek_normal">Loggerek - normalny wpis</string>
     <string name="Loggerek_quick">Loggerek - szybki wpis</string>
@@ -11,15 +9,14 @@
     <string name="sending_note_sucessfull">Sending note successful</string>
     <string name="loggerek_error">Loggerek - error</string>
     <string name="ok">Ok</string>
-    <string name="please_wait">Please wait…</string>
-    <string name="sending">Sending…</string>
+    <string name="please_wait">Please wait?</string>
+    <string name="sending">Sending?</string>
     <string name="cancel">cancel</string>
     <string name="add_note_to_cache">Add note to cache</string>
     <string name="send">send</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="google_maps_key">key</string>
     <string name="add_account">Add account</string>
     <string name="set_code">Set code</string>
     <string name="thanks_for_cache">Dzieki za kesza</string>
