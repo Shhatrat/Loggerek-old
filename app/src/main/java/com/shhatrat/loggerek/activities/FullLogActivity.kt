@@ -110,8 +110,10 @@ class FullLogActivity : AbstractActivity() {
         return this.toString()
     }
 
+    fun isFoundLogType() = full_logtype.getItems<String>().get(full_logtype.selectedIndex) == getString(R.string.found_it)
+
     fun fabListener(){
-        if(isPassword && full_password.text.isNullOrEmpty()) {
+        if(isFoundLogType() && isPassword && full_password.text.isNullOrEmpty()) {
             full_password.setBackgroundColor(ContextCompat.getColor(this, R.color.md_red_700))
             return
         }
@@ -273,11 +275,19 @@ class FullLogActivity : AbstractActivity() {
     private fun preapreRecomendationListener(event : Boolean) {
         full_logtype.setOnItemSelectedListener { view, position, id, item ->
             if(item == getString(R.string.found_it) && !event){
+                full_password.visibility= View.VISIBLE
+                full_send_password.visibility = View.VISIBLE
+                full_text_send_password.visibility= View.VISIBLE
+
                 full_rating.visibility = View.VISIBLE
                 full_image_reco.visibility = View.VISIBLE
                 full_text_reco.visibility = View.VISIBLE
             }else
             {
+                full_password.visibility= View.GONE
+                full_send_password.visibility = View.GONE
+                full_text_send_password.visibility= View.GONE
+
                 full_rating.visibility = View.GONE
                 full_image_reco.visibility = View.GONE
                 full_text_reco.visibility = View.GONE

@@ -46,6 +46,8 @@ class LogHandler(val activity : Activity) {
                             //                    e -> setupOfflineData(getOpFormIntent())
                         })
             }
+
+            removeLogsFromDB(request)
             return
         }
 
@@ -109,6 +111,15 @@ class LogHandler(val activity : Activity) {
         })
         sn.show()
         saveLogtoDb(request, u.message!! , OcResponse.NO_INTERNET.message)
+    }
+
+    private fun removeLogsFromDB(request: LogRequest) {
+        realm.beginTransaction()
+        realm.where(Unsend::class.java)
+                .equalTo("logtype", request.logtype)
+                .equalTo("cacheOp", request.cache_code)
+                .findAll().deleteAllFromRealm()
+        realm.commitTransaction()
     }
 
     private fun saveLogtoDb(request: LogRequest, errorMessage : String , type : String) {

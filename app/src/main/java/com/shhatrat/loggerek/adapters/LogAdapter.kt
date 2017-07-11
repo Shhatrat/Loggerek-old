@@ -75,12 +75,6 @@ class LogAdapter(var c: Activity, var lists: ArrayList<String?>, var type : LogF
         notifyItemChanged(position)
     }
 
-    fun getClickListener(): Observable<String> {
-        return clickSubject
-    }
-    private val clickSubject = PublishSubject.create<String>()
-
-
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? {
         val v = LayoutInflater.from(c).inflate(R.layout.list_layout, parent, false)
         return Item(v)
