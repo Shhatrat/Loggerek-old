@@ -10,13 +10,14 @@ https://opencaching.pl/okapi/
 
 # Technologies used
 - 100% Kotlin
-- Retrofit2 and OkHttp
+- Retrofit2, Signpost (for OAuth) and OkHttp
 - Realm
 - RxJava2
 - Koin (DI)
-- Material design patterns
+- Material Design patterns
+- No libs hardly based on ~~reflection~~ like EventBus!
 - Many Android stuff like Fragments, Setting Preferences, Recyclerviews, View Pagers...
-- and more... 
+- ...and more 
 
 # Usage (for developers)
 If you want build this app you have to add keys, you can genereate it here:
@@ -31,3 +32,6 @@ https://opencaching.pl/okapi/signup.html
 ```
     <string name="google_maps_key">set_your_key</string>
 ```
+
+# Screenshots
+<img src="https://github.com/Shhatrat/Loggerek/raw/master/screens/1.png" width="260"> <img src="https://github.com/Shhatrat/Loggerek/raw/master/screens/2.png" width="260"> <img src="https://github.com/Shhatrat/Loggerek/raw/master/screens/3.png" width="260"> <img src="https://github.com/Shhatrat/Loggerek/raw/master/screens/4.png" width="260"> <img src="https://github.com/Shhatrat/Loggerek/raw/master/screens/5.png" width="260">
