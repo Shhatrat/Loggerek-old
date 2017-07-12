@@ -1,7 +1,9 @@
 # Loggerek
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)    
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)    [![BuddyBuild](https://dashboard.buddybuild.com/api/statusImage?appID=594e77e516479d00017a517a&branch=master&build=latest)](https://dashboard.buddybuild.com/apps/594e77e516479d00017a517a/build/latest?branch=master)
 
-[![BuddyBuild](https://dashboard.buddybuild.com/api/statusImage?appID=594e77e516479d00017a517a&branch=master&build=latest)](https://dashboard.buddybuild.com/apps/594e77e516479d00017a517a/build/latest?branch=master)
+<a href="https://play.google.com/store/apps/details?id=com.shhatrat.loggerek" alt="Download from Google Play">
+  <img src="http://www.android.com/images/brand/android_app_on_play_large.png">
+</a>
 
 Loggerek is App for lazy geocachers :smile:
 
