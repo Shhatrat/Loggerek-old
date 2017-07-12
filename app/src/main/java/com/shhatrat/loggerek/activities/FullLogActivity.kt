@@ -2,16 +2,17 @@ package com.shhatrat.loggerek.activities
 
 import android.app.getKoin
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.View
+import com.kenny.snackbar.SnackBarItem
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
-import com.shhatrat.loggerek.api.LogHandler
-import com.shhatrat.loggerek.models.Cache
 import com.shhatrat.loggerek.models.LogRequest
+import com.shhatrat.loggerek.presenters.FullLogPresenter
+import com.shhatrat.loggerek.presenters.FullLogPresenterImpl
+import com.shhatrat.loggerek.presenters.FullLogView
 import com.squareup.picasso.Picasso
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
@@ -19,47 +20,221 @@ import kotlinx.android.synthetic.main.activity_full_log.*
 import kotlinx.android.synthetic.main.activity_full_log_fab.*
 import java.text.SimpleDateFormat
 import java.util.*
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.Theme
+import com.kenny.snackbar.SnackBarListener
 
 
-class FullLogActivity : AbstractActivity() {
+class FullLogActivity : AbstractActivity(), FullLogView {
 
-    val sharedPrefs by lazy{getKoin().get<SharedPreferences>()}
-    val retrofit by lazy { getKoin().get<Api>() }
-    var reco = false
-    var passToNote = true
-    var date : String = getData()
-    var isPassword = false
+    var dialog : MaterialDialog? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_full_log_fab)
-        preapreSaveNote()
-        if(intentWithCache())
-            loadCache()
-        else {
-            checkIntent()
-            downloadCache(getOpFormIntent()!!)
+    override fun startLoading() {
+        if(dialog == null){
+           dialog = MaterialDialog.Builder(this)
+                    .title("Uploading log...")
+                    .content("")
+                    .theme(Theme.LIGHT)
+                    .progress(true, 0)
+                    .build()
+        }else{
+            dialog!!.show()
         }
-        preapreListeners()
-        preapreData()
-        preapreOnClick(getOpFormIntent()!!)
     }
 
-    fun preapreOnClick(op : String){
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://opencaching.pl/$op"))
+    override fun stopLoading() {
+        dialog?.let { dialog!!.dismiss() }
+    }
+
+    override fun changeLogSpinnerSelected(item: String?) {
+        item?.let{
+            full_logtype.getItems<String>().forEachIndexed { index, s -> if(item?:"" == s) full_logtype.selectedIndex = index }}
+    }
+
+    var reco = false
+    var date : String = getData()
+    var passToNote = true
+
+    override fun changeRecoText(text: String?) {
+        full_text_reco.text = text
+    }
+
+    override fun changeTitle(title: String?) {
+        title?.let{ full_title.text = title }
+    }
+
+    override fun changeOnClickTitleListener(address: String?) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(address))
         full_title.setOnClickListener {         ContextCompat.startActivity(this, browserIntent, null) }
         full_map.setOnClickListener {         ContextCompat.startActivity(this, browserIntent, null) }
         full_icon_type.setOnClickListener {         ContextCompat.startActivity(this, browserIntent, null) }
     }
 
-
-    private fun loadCache() {
-        val parcel = intent.getParcelableExtra<LogRequest>("unsend")
-        downloadCache(parcel.cache_code!!)
+    override fun changeMap(address: String?) {
+        Picasso.with(this).load(address).into(full_map)
     }
 
-    private fun  intentWithCache(): Boolean {
-        return intent.getParcelableExtra<LogRequest>("unsend") != null
+    override fun changeIconCacheType(cacheType: String?) {
+        cacheType?.let {
+            when(cacheType){
+            "Traditional" ->    full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.traditionals))
+            "Multi" ->          full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.multi))
+            "Quiz" ->           full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.quiz))
+            "Other" ->          full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.unknown))
+            "Own" ->            full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.owncache))
+            "Moving" ->         full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.moving))
+            "Event" ->          full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.event))
+            "Virtual" ->        full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.virtual))
+        }}
+    }
+
+    override fun changeLog(log: String?) {
+        log?.let {full_log.setText(log)}
+    }
+
+    override fun changeRatesVisibility(visible: Boolean?) {
+        if(visible?:true){
+                full_rating.visibility = View.VISIBLE
+                full_image_reco.visibility = View.VISIBLE
+                full_text_reco.visibility = View.VISIBLE
+        }else{
+            full_rating.visibility = View.GONE
+            full_image_reco.visibility = View.GONE
+            full_text_reco.visibility = View.GONE
+        }
+    }
+
+    override fun changeRates(rate: Int?) {
+        rate?.let{full_rating.rating = rate.toFloat()}
+    }
+
+    override fun changeReco(recommend: Boolean?) {
+        if(recommend?:true)
+            full_image_reco.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_done_white_24dp))
+        else
+            full_image_reco.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_clear_white_24dp))
+    }
+
+    override fun changeRecoVisibility(visible: Boolean?) {
+        if(visible?:true) {
+            full_rating.visibility = View.VISIBLE
+            full_image_reco.visibility = View.VISIBLE
+            full_text_reco.visibility = View.VISIBLE
+        }else{
+            full_rating.visibility = View.GONE
+            full_image_reco.visibility = View.GONE
+            full_text_reco.visibility = View.GONE
+        }
+    }
+
+    override fun changeLogSpinnerItems(list: List<String>?) {
+        list?.let{full_logtype.setItems(list)}
+    }
+
+    override fun changeLogSpinnerPosition(list: List<String>?, position: Int?) {
+        list?.let{
+            full_logtype.setItems(list)
+            full_logtype.selectedIndex = position?:0
+        }
+    }
+
+    override fun changeDate(date: String?) {
+      date?.let { full_date.text = date }
+    }
+
+    override fun changePassword(password: String?) {
+        password?.let { full_password.setText(password) }
+    }
+
+    override fun changePasswordVisibility(visible: Boolean) {
+            if(visible){
+                full_password.visibility= View.VISIBLE
+            }else{
+                full_password.visibility= View.GONE
+            }
+    }
+
+    override fun changeSavePassword(save: Boolean?) {
+        if(save?:true)
+            full_send_password.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_done_white_24dp))
+        else
+            full_send_password.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_clear_white_24dp))
+     }
+
+    override fun changeSavePasswordVisibility(visible: Boolean) {
+        if(visible){
+            full_send_password.visibility = View.VISIBLE
+            full_text_send_password.visibility= View.VISIBLE
+        }else{
+            full_send_password.visibility = View.GONE
+            full_text_send_password.visibility= View.GONE
+        }
+    }
+
+
+
+    override fun showNotification(text: String?, type: String?, finishAfterShow : Boolean) {
+        SnackBarItem.Builder(this)
+                .setMessage(text)
+                .setSnackBarMessageColorResource(R.color.md_black_1000)
+                .setSnackBarBackgroundColorResource(R.color.md_white_1000)
+                .setInterpolatorResource(android.R.interpolator.accelerate_decelerate)
+                .setSnackBarListener(object : SnackBarListener {
+                    override fun onSnackBarStarted(`object`: Any?) {
+                    }
+
+                    override fun onSnackBarFinished(`object`: Any?, actionPressed: Boolean) {
+                        if(finishAfterShow)
+                        finish()
+                    }})
+                .setDuration(3000)
+                .show()
+    }
+
+    override fun redPassword() {
+        full_password.setBackgroundColor(ContextCompat.getColor(this, R.color.md_red_700))
+    }
+
+    override fun normalPassword() {
+        full_password.setBackgroundColor(ContextCompat.getColor(this, R.color.primary_dark))
+    }
+
+
+    private val presenter: FullLogPresenter<FullLogView> by lazy {
+        FullLogPresenterImpl(this, retrofit)
+    }
+
+    val retrofit by lazy { getKoin().get<Api>() }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_full_log_fab)
+        preapreListeners()
+        if (intentWithCache())
+            presenter.getDataFromDb(intent.getParcelableExtra<LogRequest>("unsend"))
+        else
+            presenter.getDataFromIntent(getOpFormIntent()!!)
+    }
+
+    private fun preapreListeners(){
+        preapreData()
+        full_fab.setOnClickListener{
+            val request = LogRequest(getOpFormIntent()!!,
+                    full_logtype.getItems<String>()[full_logtype.selectedIndex],
+                full_log.text.toString(),
+                date,
+                reco,
+                getRating(),
+                full_password.text.toString())
+            presenter.send(request, passToNote, full_note.text.toString())
+        }
+
+        full_send_password.setOnClickListener { changePassToNote() }
+        full_text_send_password.setOnClickListener { changePassToNote() }
+        full_image_reco.setOnClickListener { changeReco() }
+        full_text_reco.setOnClickListener { changeReco()  }
+        full_date.setOnClickListener { showDataPicker()  }
+        full_logtype.setOnItemSelectedListener { view, position, id, item -> presenter.changeLogType(item.toString()) }
     }
 
     private fun preapreData() {
@@ -67,31 +242,32 @@ class FullLogActivity : AbstractActivity() {
         val df = SimpleDateFormat("yyyy-MM-dd\tHH:mm")
         full_date.text = df.format(c.time)
     }
-
-
-
-    private fun getData(): String{
-        val c = Calendar.getInstance()
-        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-        return df.format(c.time)
+    fun changePassToNote(){
+        passToNote =  passToNote.not()
+        changeSavePassword(passToNote)
     }
 
-    private fun preapreSaveNote(){
-        passToNote = !sharedPreferences.getBoolean("normal_save_password", false)
-        changePass()
+    private fun  getRating(): Int? {
+        if(full_rating.rating.toInt()==0)
+            return null
+        return full_rating.rating.toInt()
     }
 
-    private fun preapreListeners() {
-        full_image_reco.setOnClickListener { changeReco() }
-        full_text_reco.setOnClickListener { changeReco()  }
-        full_fab.setOnClickListener { fabListener() }
-        full_date.setOnClickListener { showDataPicker()  }
+    fun changeReco(){
+        reco = reco.not()
+        changeReco(reco)
     }
 
-    private fun showDataPicker() {
+    private fun  intentWithCache(): Boolean {
+        return intent.getParcelableExtra<LogRequest>("unsend") != null
+    }
+
+
+
+        private fun showDataPicker() {
         val now = Calendar.getInstance()
         val dpd = DatePickerDialog.newInstance(
-                DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth -> run { date ="$year-${monthOfYear.preapreZeros()}-${dayOfMonth.preapreZeros()}" ; showTimePicker() } },
+                DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth -> run { date ="$year-${monthOfYear.prepareZeros()}-${dayOfMonth.prepareZeros()}" ; showTimePicker() } },
                 now.get(Calendar.YEAR),
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH)
@@ -104,11 +280,9 @@ class FullLogActivity : AbstractActivity() {
     val dpd = TimePickerDialog.newInstance(
             TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute, second -> run {
                 full_date.text = "$date\t$hourOfDay:$minute"
-
                 val c = Calendar.getInstance()
                 val df = SimpleDateFormat(".SSSZ")
-
-                date = "${date}T${hourOfDay.preapreZeros()}:${minute.preapreZeros()}:${second.preapreZeros()}${df.format(c.time)}"
+                date = "${date}T${hourOfDay.prepareZeros()}:${minute.prepareZeros()}:${second.prepareZeros()}${df.format(c.time)}"
             } },
             now.get(Calendar.HOUR_OF_DAY),
             now.get(Calendar.MINUTE),
@@ -117,221 +291,15 @@ class FullLogActivity : AbstractActivity() {
     dpd.show(fragmentManager, "Datepickerdialog")
     }
 
-    fun Int.preapreZeros():String{
+    fun Int.prepareZeros():String{
         if(this.toString().length==1)
             return "0$this"
         return this.toString()
     }
 
-    fun isFoundLogType() = full_logtype.getItems<String>().get(full_logtype.selectedIndex) == getString(R.string.found_it)
-
-    fun fabListener(){
-        if(isFoundLogType() && isPassword && full_password.text.isNullOrEmpty()) {
-            full_password.setBackgroundColor(ContextCompat.getColor(this, R.color.md_red_700))
-            return
-        }
-        full_password.setBackgroundColor(ContextCompat.getColor(this, R.color.primary_dark))
-        val request = LogRequest(getOpFormIntent()!!,
-                full_logtype.getItems<String>().get(full_logtype.selectedIndex),
-                full_log.text.toString(),
-                date,
-                reco,
-                getRating(),
-                full_password.text.toString())
-
-        var note : String? = null
-        if(passToNote || !full_password.text.isNullOrEmpty())
-            note = full_password.text.toString()
-
-        retrofit.logEntryFull(getOpFormIntent()!!,
-                full_logtype.getItems<String>().get(full_logtype.selectedIndex),
-                full_log.text.toString(),
-                date,
-                reco,
-                getRating(),
-                full_password.text.toString())
-                .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
-                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
-                .subscribe({
-                    u -> LogHandler(this).success(request, u, note )}, {
-                    e -> LogHandler(this).error(request, e)})
-
-        if(!full_password.text.isNullOrEmpty()){
-            retrofit.saveNote(getOpFormIntent()!!, full_note.text.toString())
-                    .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
-                    .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
-                    .subscribe({
-                        //                    u -> setupData(u)
-                    }, {
-                        //                    e -> setupOfflineData(getOpFormIntent())
-                    })
-        }
-    }
-
-    private fun  getRating(): Int? {
-        if(full_rating.rating.toInt()==0)
-            return null
-        return full_rating.rating.toInt()
-    }
-
-    fun changeReco(){
-        if(reco) {
-            reco=false
-            full_image_reco.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_clear_white_24dp))
-        }else {
-            reco=true
-            full_image_reco.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_done_white))
-        }
-    }
-
-    fun setReco(){
-        if(reco)
-            full_image_reco.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_done_white))
-        else
-            full_image_reco.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_clear_white_24dp))
-    }
-
-    fun downloadCache(op : String){
-        getOpFormIntent()
-        retrofit.geocache(op, "name|location|type|recommendations|founds|req_passwd".getUTF8String())
-                .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
-                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
-                .subscribe({
-                    u -> setupData(u)
-                }, {
-                    e -> setupOfflineData(getOpFormIntent())
-                })
-    }
-
-    private fun  setupOfflineData(opFormIntent: String?) {
-        full_title.text = opFormIntent!!
-        preapreSpinner()
-        loadData()
-    }
-
-    fun preapreSpinner(){
-        val list = listOf(
-                getString(R.string.found_it),
-                getString(R.string.will_attend),
-                getString(R.string.attended),
-                getString(R.string.comment),
-                getString(R.string.didnt_fint_it))
-        full_logtype.setItems(list)
-    }
-
-    fun preapreSpinner(event : Boolean){
-        if(event) {
-            val list = listOf(
-                    getString(R.string.will_attend),
-                    getString(R.string.attended),
-                    getString(R.string.comment))
-            full_logtype.setItems(list)
-        }
-        else{
-            val list = listOf(
-                    getString(R.string.found_it),
-                    getString(R.string.comment),
-                    getString(R.string.didnt_fint_it))
-            full_logtype.setItems(list)
-        }
-    }
-
-    private fun  setupData(u: Cache) {
-        isPassword = u.req_passwd
-        full_title.text = u.name
-        Picasso.with(this).load(preapreGoogleMapsLink(u.location)).into(full_map)
-        full_text_reco.text = "Add recommendation (${u.recommendations}/${u.founds})"
-        if(!u.req_passwd) {
-            full_password.visibility= View.GONE
-            full_send_password.visibility = View.GONE
-            full_text_send_password.visibility= View.GONE
-        }
-        if(u.type=="Event")
-        {
-            full_image_reco.visibility= View.GONE
-            full_text_reco.visibility= View.GONE
-        }
-        else{
-            preapreSaveNoteListener()
-        }
-        when(u.type){
-            "Traditional" ->    full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.traditionals))
-            "Multi" ->          full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.multi))
-            "Quiz" ->           full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.quiz))
-            "Other" ->          full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.unknown))
-            "Own" ->            full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.owncache))
-            "Moving" ->         full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.moving))
-            "Event" ->          full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.event))
-            "Virtual" ->        full_icon_type.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.virtual))
-        }
-        preapreSpinner(u.type=="Event")
-        preapreRecomendationListener(u.type=="Event")
-        loadData()
-    }
-
-    private fun loadData() {
-        if(intentWithCache()) {
-            val parcel = intent.getParcelableExtra<LogRequest>("unsend")
-            full_log.setText(parcel.comment ?: "")
-            val rating = parcel.rating ?: 0
-            full_rating.rating = rating.toFloat()
-
-            reco = parcel.recommend ?: false
-            setReco()
-            val list  = full_logtype.getItems<String>()
-            list.forEachIndexed { index, s -> if(parcel.logtype?:"" == s) full_logtype.selectedIndex = index }
-
-            full_password.setText(parcel.password?:"")
-        }
-    }
-
-    private fun preapreRecomendationListener(event : Boolean) {
-        full_logtype.setOnItemSelectedListener { view, position, id, item ->
-            if(item == getString(R.string.found_it) && !event){
-                full_password.visibility= View.VISIBLE
-                full_send_password.visibility = View.VISIBLE
-                full_text_send_password.visibility= View.VISIBLE
-
-                full_rating.visibility = View.VISIBLE
-                full_image_reco.visibility = View.VISIBLE
-                full_text_reco.visibility = View.VISIBLE
-            }else
-            {
-                full_password.visibility= View.GONE
-                full_send_password.visibility = View.GONE
-                full_text_send_password.visibility= View.GONE
-
-                full_rating.visibility = View.GONE
-                full_image_reco.visibility = View.GONE
-                full_text_reco.visibility = View.GONE
-            }
-            if(item == getString(R.string.attended) && event)
-                full_rating.visibility = View.VISIBLE
-        }
-    }
-
-    private fun preapreSaveNoteListener() {
-        full_send_password.setOnClickListener { changePass() }
-        full_text_send_password.setOnClickListener { changePass()  }
-    }
-
-    private fun changePass() {
-        if(passToNote) {
-            passToNote=false
-            full_send_password.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_clear_white_24dp))
-        }else {
-            passToNote=true
-            full_send_password.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_done_white))
-        }
-    }
-
-    fun  preapreGoogleMapsLink(home_location: String?): String{
-        val first = "https://maps.googleapis.com/maps/api/staticmap?center="
-        val second = "&markers=color:red%7Clabel:%7C${home_location!!.replace("|", ",")}&zoom=14&size=500x200&maptype=roadmap&key="
-        val key = getString(R.string.google_maps_key)
-        if(!home_location.isNullOrBlank())
-            return "$first${home_location!!.replace("|", ",")}$second$key"
-        else
-            return "${first}51.743792, 19.450380&zoom=6&size=600x300&maptype=roadmap&key=$key"
+    private fun getData(): String{
+        val c = Calendar.getInstance()
+        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+        return df.format(c.time)
     }
 }

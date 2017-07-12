@@ -28,7 +28,7 @@ class LogHandler(val activity : Activity) {
     val retrofit by lazy{activity.getKoin().get<Api>()}
     fun success(request : LogRequest, u : Response<Log>, note : String? = null) {
         if(!u.isSuccessful) {
-            saveLogtoDb(request, u.message(), u.body()!!.message)
+            realm.saveLogtoDb(request, u.message(), u.body()!!.message)
             showSnackbar(u)
             return
         }
@@ -54,11 +54,11 @@ class LogHandler(val activity : Activity) {
         if(u.body()!!.message == OcResponse.ALREADY_CUBMITTED.message)
         {
             showSnackbar(u)
-            saveLogtoDb(request, u.message(), u.body()!!.message)
+            realm.saveLogtoDb(request, u.message(), u.body()!!.message)
             return
         }
 
-        if( u.body()!!.message == OcResponse.PASSWORD.message){
+        if( u.body()!!.message == OcResponse.REQ_PASSWORD.message){
             SnackBarItem.Builder(activity)
                     .setMessage(u.body()!!.message)
                     .setSnackBarMessageColorResource(R.color.md_black_1000)
@@ -77,7 +77,7 @@ class LogHandler(val activity : Activity) {
                         }
                     })
                     .show()
-            saveLogtoDb(request, u.message(), u.body()!!.message)
+            realm.saveLogtoDb(request, u.message(), u.body()!!.message)
             return
         }
     }
@@ -110,7 +110,7 @@ class LogHandler(val activity : Activity) {
             }
         })
         sn.show()
-        saveLogtoDb(request, u.message!! , OcResponse.NO_INTERNET.message)
+        realm.saveLogtoDb(request, u.message!! , OcResponse.NO_INTERNET.message)
     }
 
     private fun removeLogsFromDB(request: LogRequest) {
@@ -122,7 +122,7 @@ class LogHandler(val activity : Activity) {
         realm.commitTransaction()
     }
 
-    private fun saveLogtoDb(request: LogRequest, errorMessage : String , type : String) {
+    fun Realm.saveLogtoDb(request: LogRequest, errorMessage : String , type : String) {
 
         if(sharedPreferences.getBoolean("quick_save", true))
         {
@@ -138,9 +138,9 @@ class LogHandler(val activity : Activity) {
             errorLog.rating = request.rating
             errorLog.password = request.password
             errorLog.recommend = request.recommend
-            realm.beginTransaction()
-            realm.insert(errorLog)
-            realm.commitTransaction()
+            this.beginTransaction()
+            this.insert(errorLog)
+            this.commitTransaction()
         }
-    }
+}
 }

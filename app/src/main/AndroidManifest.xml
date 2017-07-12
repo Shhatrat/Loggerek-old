@@ -215,6 +215,7 @@
         </activity>
         <activity
             android:name=".activities.FullLogActivity"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/Loggerek_normal"
             android:theme="@style/Theme.AppCompat.Dialog.NoActionBar">
             <intent-filter>
