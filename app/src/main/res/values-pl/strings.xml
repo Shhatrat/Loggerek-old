@@ -48,4 +48,12 @@
     <string name="response_success">Log wysłany pomyslnie</string>
     <string name="already_submitted">Błąd! Ta skrzynka jest już zalogowana</string>
     <string name="response_bad_password">Błąd! Złe hasło</string>
+    <string name="status">Status</string>
+    <string name="help">Pomoc</string>
+    <string name="logout">Wyloguj</string>
+    <string name="settings">Ustawienia</string>
+    <string name="defaultL">Normalny</string>
+    <string name="bad">Zły</string>
+    <string name="good">Dobry</string>
+    <string name="unsend">Niewysłane</string>
 </resources>

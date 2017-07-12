@@ -41,19 +41,27 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
     lateinit  var header : AccountHeader
     lateinit  var drawer : Drawer
 
-    val STATUS = "Status"
-    val UNSEND = "Unsend"
-    val GOOD = "Good"
-    val BAD = "Bad"
-    val DEFAULT = "Default"
-    val SETTINGS = "Settings"
-    val LOGOUT = "Logout"
-    val HELP = "Help"
+    var STATUS = "Status"
+    var UNSEND = "Unsend"
+    var GOOD = "Good"
+    var BAD = "Bad"
+    var DEFAULT = "Default"
+    var SETTINGS = "Settings"
+    var LOGOUT = "Logout"
+    var HELP = "Help"
 
 
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.shhatrat.loggerek.R.layout.activity_config)
+        STATUS = getString(R.string.status)
+        UNSEND = getString(R.string.unsend)
+        GOOD = getString(R.string.good)
+        BAD = getString(R.string.bad)
+        DEFAULT = getString(R.string.defaultL)
+        SETTINGS = getString(R.string.settings)
+        LOGOUT = getString(R.string.logout)
+        HELP = getString(R.string.help)
         val toolbar = findViewById(com.shhatrat.loggerek.R.id.toolbar) as android.support.v7.widget.Toolbar
         setSupportActionBar(toolbar)
 

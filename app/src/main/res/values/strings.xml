@@ -49,4 +49,12 @@
     <string name="already_submitted">You have already submitted a "Found it" log entry once.</string>
     <string name="response_bad_password">Invalid password!</string>
     <string name="uploading_log">Uploading log...</string>
+    <string name="status">status</string>
+    <string name="help">help</string>
+    <string name="logout">logout</string>
+    <string name="settings">settings</string>
+    <string name="defaultL">normal</string>
+    <string name="bad">bad</string>
+    <string name="good">good</string>
+    <string name="unsend">unsend</string>
 </resources>
