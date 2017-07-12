@@ -1,7 +1,6 @@
 package com.shhatrat.loggerek.adapters
 
 import android.app.Activity
-import android.app.getKoin
 import android.content.Context
 import android.content.Intent
 import android.support.v4.content.ContextCompat
@@ -14,6 +13,7 @@ import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.activities.FullLogActivity
 import com.shhatrat.loggerek.activities.getUTF8String
 import com.shhatrat.loggerek.api.LogHandler
+import com.shhatrat.loggerek.di.StupidSingleton
 import com.shhatrat.loggerek.models.Unsend
 import com.shhatrat.loggerek.models.translateResponse
 import io.reactivex.Observable
@@ -32,8 +32,8 @@ class UnsendAdapter (var c: Activity, var lists: ArrayList<Unsend>) : RecyclerVi
         return lists
     }
 
-    val retrofit by lazy {c.getKoin().get<com.shhatrat.loggerek.api.Api>()}
-    val realm by lazy {c.getKoin().get<Realm>()}
+    val retrofit by lazy {StupidSingleton.ocApi(c)}
+    val realm by lazy {StupidSingleton.realm()}
 
     fun getClickListener(): Observable<String> {
         return clickSubject

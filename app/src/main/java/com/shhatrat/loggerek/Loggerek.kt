@@ -1,18 +1,17 @@
 package com.shhatrat.loggerek
 
+import android.app.Application
 import com.chibatching.kotpref.Kotpref
 import com.chibatching.kotpref.gsonpref.gson
 import com.facebook.stetho.Stetho
 import com.google.gson.Gson
-import com.shhatrat.loggerek.di.Module
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider
 import io.realm.Realm
-import org.koin.android.KoinApplication
 
 /**
  * Created by szymon on 16.06.17.
  */
-class Loggerek : KoinApplication(Module::class){
+class Loggerek : Application(){
 
     override fun onCreate() {
         super.onCreate()

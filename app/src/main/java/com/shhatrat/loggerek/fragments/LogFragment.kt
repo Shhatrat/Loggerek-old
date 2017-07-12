@@ -1,7 +1,6 @@
 package com.shhatrat.loggerek.fragments
 
 
-import android.app.getKoin
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -13,6 +12,7 @@ import android.view.ViewGroup
 import com.afollestad.materialdialogs.MaterialDialog
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.adapters.LogAdapter
+import com.shhatrat.loggerek.di.StupidSingleton
 import com.shhatrat.loggerek.models.SingleLog
 import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_log.*
@@ -24,7 +24,7 @@ class LogFragment : Fragment() {
     }
 
     lateinit var type : Type
-    val realm by lazy{activity.getKoin().get<Realm>()}
+    val realm by lazy{StupidSingleton.realm()}
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,

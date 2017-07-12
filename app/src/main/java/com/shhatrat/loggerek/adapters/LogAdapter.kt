@@ -1,8 +1,6 @@
 package com.shhatrat.loggerek.adapters
 
 import android.app.Activity
-import android.app.getKoin
-import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -10,20 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import com.afollestad.materialdialogs.MaterialDialog
 import com.shhatrat.loggerek.R
+import com.shhatrat.loggerek.di.StupidSingleton
 import com.shhatrat.loggerek.fragments.LogFragment
 import com.shhatrat.loggerek.models.SingleLog
-import com.shhatrat.loggerek.models.Unsend
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 import io.realm.Realm
-import kotlinx.android.synthetic.main.activity_full_log.view.*
 import kotlinx.android.synthetic.main.list_layout.view.*
-import kotlin.collections.ArrayList
 
 
 class LogAdapter(var c: Activity, var lists: ArrayList<String?>, var type : LogFragment.Type) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
-    val realm by lazy{c.getKoin().get<Realm>()}
+    val realm by lazy{StupidSingleton.realm()}
 
     fun getList(): ArrayList<String?> {
         return lists

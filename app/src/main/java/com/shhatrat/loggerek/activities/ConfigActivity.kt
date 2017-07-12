@@ -1,6 +1,5 @@
 package com.shhatrat.loggerek.activities
 
-import android.app.getKoin
 import android.content.Intent
 import android.graphics.Color
 import android.support.v4.app.Fragment
@@ -17,6 +16,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.shhatrat.loggerek.R
+import com.shhatrat.loggerek.di.StupidSingleton
 import com.shhatrat.loggerek.fragments.LogFragment
 import com.shhatrat.loggerek.fragments.SettingsFragment
 import com.shhatrat.loggerek.fragments.StatusFragment
@@ -35,8 +35,8 @@ class ConfigActivity : android.support.v7.app.AppCompatActivity() {
     var autorization = false
     var o : com.shhatrat.loggerek.api.OAuth? = null
     val parameters = "username|caches_found|caches_notfound|caches_hidden|profile_url|home_location"
-    val ret by lazy {getKoin().get<com.shhatrat.loggerek.api.Api>()}
-    val realm by lazy{getKoin().get<Realm>()}
+    val ret by lazy {StupidSingleton.ocApi(this)}
+    val realm by lazy{StupidSingleton.realm()}
 
     lateinit  var header : AccountHeader
     lateinit  var drawer : Drawer

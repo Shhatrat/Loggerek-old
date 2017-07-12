@@ -1,20 +1,19 @@
 package com.shhatrat.loggerek.fragments
 
-import android.app.getKoin
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.shhatrat.loggerek.R
+import com.shhatrat.loggerek.di.StupidSingleton
 import com.shhatrat.loggerek.models.User
 import com.squareup.picasso.Picasso
-import io.realm.Realm
 import kotlinx.android.synthetic.main.fragment_status.*
 
 class StatusFragment : Fragment() {
 
-    val realm by lazy{activity.getKoin().get<Realm>()}
+    val realm by lazy{StupidSingleton.realm()}
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

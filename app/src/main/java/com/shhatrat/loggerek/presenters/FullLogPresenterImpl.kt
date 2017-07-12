@@ -1,13 +1,12 @@
 package com.shhatrat.loggerek.presenters
 
 import android.app.Activity
-import android.app.getKoin
-import android.content.SharedPreferences
 import com.kenny.snackbar.SnackBarItem
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.activities.getUTF8String
 import com.shhatrat.loggerek.api.Api
 import com.shhatrat.loggerek.api.LogHandler
+import com.shhatrat.loggerek.di.StupidSingleton
 import com.shhatrat.loggerek.models.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -169,7 +168,7 @@ class FullLogPresenterImpl(override var view: FullLogView?, val retrofit : Api):
 
     fun success(request : LogRequest, u : Response<Log>, note : String? = null) {
         view?.normalPassword()
-        val realm by lazy{activity.getKoin().get<Realm>()}
+        val realm by lazy{StupidSingleton.realm()}
         if(!u.isSuccessful) {
             realm.saveLogtoDb(request, u.message(), u.body()!!.message)
             view?.showNotification(u.body()!!.message, null, false)
@@ -224,7 +223,7 @@ class FullLogPresenterImpl(override var view: FullLogView?, val retrofit : Api):
         }
     }
     fun Realm.saveLogtoDb(request: LogRequest, errorMessage : String , type : String) {
-        val sharedPreferences by lazy { activity.getKoin().get<SharedPreferences>() }
+        val sharedPreferences by lazy { StupidSingleton.sharedPreferences(activity) }
 
         if (sharedPreferences.getBoolean("quick_save", true)) {
             val errorLog = Unsend()

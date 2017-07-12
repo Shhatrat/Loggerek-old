@@ -1,19 +1,19 @@
 package com.shhatrat.loggerek.activities
 
-import android.app.getKoin
 import android.os.Bundle
 import android.text.InputType
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
+import com.shhatrat.loggerek.di.StupidSingleton
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class NoteActivity : AbstractActivity() {
 
     lateinit var note : String
-    val retrofit by lazy { getKoin().get<Api>() }
+    val retrofit by lazy { StupidSingleton.ocApi(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

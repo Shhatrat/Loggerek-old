@@ -1,6 +1,5 @@
 package com.shhatrat.loggerek.activities
 
-import android.app.getKoin
 import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
@@ -8,6 +7,7 @@ import android.view.View.VISIBLE
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
 import com.shhatrat.loggerek.api.LogHandler
+import com.shhatrat.loggerek.di.StupidSingleton
 import com.shhatrat.loggerek.fragments.LogFragment
 import com.shhatrat.loggerek.models.LogRequest
 import com.shhatrat.loggerek.models.SingleLog
@@ -86,7 +86,7 @@ class LogActivity : AbstractActivity() {
 
 
     private fun logCache(fullLink: String, log : String){
-        val ret by lazy { getKoin().get<Api>() }
+        val ret by lazy { StupidSingleton.ocApi(this) }
         hideFabsShowProgress()
         val logRequest = LogRequest(getOP(fullLink), "Found it", log)
         ret.logEntry(getOP(fullLink), "Found it", log)

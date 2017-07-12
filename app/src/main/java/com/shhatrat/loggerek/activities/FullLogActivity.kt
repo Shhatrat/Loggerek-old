@@ -1,15 +1,19 @@
 package com.shhatrat.loggerek.activities
 
-import android.app.getKoin
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.View
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.Theme
 import com.kenny.snackbar.SnackBarItem
+import com.kenny.snackbar.SnackBarListener
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.api.Api
+import com.shhatrat.loggerek.di.StupidSingleton
 import com.shhatrat.loggerek.models.LogRequest
+import com.shhatrat.loggerek.models.translateResponse
 import com.shhatrat.loggerek.presenters.FullLogPresenter
 import com.shhatrat.loggerek.presenters.FullLogPresenterImpl
 import com.shhatrat.loggerek.presenters.FullLogView
@@ -20,10 +24,6 @@ import kotlinx.android.synthetic.main.activity_full_log.*
 import kotlinx.android.synthetic.main.activity_full_log_fab.*
 import java.text.SimpleDateFormat
 import java.util.*
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.Theme
-import com.kenny.snackbar.SnackBarListener
-import com.shhatrat.loggerek.models.translateResponse
 
 
 class FullLogActivity : AbstractActivity(), FullLogView {
@@ -205,7 +205,7 @@ class FullLogActivity : AbstractActivity(), FullLogView {
         FullLogPresenterImpl(this, retrofit)
     }
 
-    val retrofit by lazy { getKoin().get<Api>() }
+    val retrofit by lazy { StupidSingleton.ocApi(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

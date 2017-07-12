@@ -1,15 +1,13 @@
 package com.shhatrat.loggerek.api
 
-import com.shhatrat.loggerek.models.OcResponse.*
 import android.app.Activity
-import android.app.getKoin
 import android.content.Intent
-import android.content.SharedPreferences
 import android.support.design.widget.Snackbar
 import com.kenny.snackbar.SnackBarItem
 import com.kenny.snackbar.SnackBarListener
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.activities.FullLogActivity
+import com.shhatrat.loggerek.di.StupidSingleton
 import com.shhatrat.loggerek.models.*
 import de.mateware.snacky.Snacky
 import io.realm.Realm
@@ -21,9 +19,9 @@ import retrofit2.Response
 class LogHandler(val activity : Activity) {
 
 
-    val sharedPreferences by lazy{activity.getKoin().get<SharedPreferences>()}
-    val realm by lazy{activity.getKoin().get<Realm>()}
-    val retrofit by lazy{activity.getKoin().get<Api>()}
+    val sharedPreferences by lazy{StupidSingleton.sharedPreferences(activity)}
+    val realm by lazy{StupidSingleton.realm()}
+    val retrofit by lazy{StupidSingleton.ocApi(activity)}
 
 
     fun success(request : LogRequest, u : Response<Log>, note : String? = null, finishAfter :Boolean = false, saveLog : Boolean = true) {
