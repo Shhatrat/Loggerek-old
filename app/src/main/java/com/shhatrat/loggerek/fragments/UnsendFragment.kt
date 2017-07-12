@@ -36,9 +36,13 @@ class UnsendFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setupRecycleView()
+        unsend_swipe_to_refresh.setOnRefreshListener {
+            unsend_swipe_to_refresh.isRefreshing = true
+            setupRecycleView() }
     }
 
     private fun setupRecycleView() {
+        unsend_swipe_to_refresh.isRefreshing = false
         unsend_recycleview.layoutManager = LinearLayoutManager(this.context)
         unsend_recycleview.hasFixedSize()
         ItemTouchHelper(getHelper(unsend_recycleview)).attachToRecyclerView(unsend_recycleview)

@@ -89,7 +89,7 @@ class UnsendAdapter (var c: Activity, var lists: ArrayList<Unsend>) : RecyclerVi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     u -> run{
-                    LogHandler(c).success(unsend.getParcel(), u, finishAfter = false)
+                    LogHandler(c).success(unsend.getParcel(), u, finishAfter = false, saveLog = false)
                 }}, {
                     e ->
                     run {

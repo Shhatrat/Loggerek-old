@@ -24,15 +24,18 @@ class LogHandler(val activity : Activity) {
     val sharedPreferences by lazy{activity.getKoin().get<SharedPreferences>()}
     val realm by lazy{activity.getKoin().get<Realm>()}
     val retrofit by lazy{activity.getKoin().get<Api>()}
-    fun success(request : LogRequest, u : Response<Log>, note : String? = null, finishAfter :Boolean = false) {
+
+
+    fun success(request : LogRequest, u : Response<Log>, note : String? = null, finishAfter :Boolean = false, saveLog : Boolean = true) {
         if(!u.isSuccessful) {
+            if(saveLog)
             realm.saveLogtoDb(request, u.message(), u.body()!!.message)
-            showSnackbar(u)
+            showSnackbar(u, finishAfter)
             return
         }
 
         if(u.body()!!.message == OcResponse.SUCESS.message){
-            showSnackbar(u)
+            showSnackbar(u, finishAfter)
 
             if(!note.isNullOrEmpty()) {
                 retrofit.saveNote(request.cache_code!!, "Hasło = $note")
@@ -51,7 +54,8 @@ class LogHandler(val activity : Activity) {
 
         if(u.body()!!.message == OcResponse.ALREADY_CUBMITTED.message)
         {
-            showSnackbar(u)
+            showSnackbar(u, finishAfter)
+            if(saveLog)
             realm.saveLogtoDb(request, u.message(), u.body()!!.message)
             return
         }
@@ -76,13 +80,14 @@ class LogHandler(val activity : Activity) {
                         }
                     })
                     .show()
+            if(saveLog)
             realm.saveLogtoDb(request, u.message(), u.body()!!.message)
             return
         }
     }
 
 
-    private fun showSnackbar(u: Response<Log>) {
+    private fun showSnackbar(u: Response<Log>, finishAfter: Boolean = true) {
         SnackBarItem.Builder(activity)
                 .setMessage(u.body()!!.message.translateResponse(activity))
                 .setSnackBarMessageColorResource(R.color.md_black_1000)
@@ -94,6 +99,7 @@ class LogHandler(val activity : Activity) {
                     }
 
                     override fun onSnackBarFinished(`object`: Any?, actionPressed: Boolean) {
+                        if(finishAfter)
                         activity.finish()
                     }
                 })
