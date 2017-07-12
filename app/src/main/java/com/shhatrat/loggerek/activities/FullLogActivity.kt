@@ -23,6 +23,7 @@ import java.util.*
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
 import com.kenny.snackbar.SnackBarListener
+import com.shhatrat.loggerek.models.translateResponse
 
 
 class FullLogActivity : AbstractActivity(), FullLogView {
@@ -32,7 +33,7 @@ class FullLogActivity : AbstractActivity(), FullLogView {
     override fun startLoading() {
         if(dialog == null){
            dialog = MaterialDialog.Builder(this)
-                    .title("Uploading log...")
+                    .title(getString(R.string.uploading_log))
                     .content("")
                     .theme(Theme.LIGHT)
                     .progress(true, 0)
@@ -175,7 +176,7 @@ class FullLogActivity : AbstractActivity(), FullLogView {
 
     override fun showNotification(text: String?, type: String?, finishAfterShow : Boolean) {
         SnackBarItem.Builder(this)
-                .setMessage(text)
+                .setMessage(text!!.translateResponse(this))
                 .setSnackBarMessageColorResource(R.color.md_black_1000)
                 .setSnackBarBackgroundColorResource(R.color.md_white_1000)
                 .setInterpolatorResource(android.R.interpolator.accelerate_decelerate)

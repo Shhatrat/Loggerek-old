@@ -43,4 +43,9 @@
     <string name="d7">kliknij na link</string>
     <string name="d8">rezultat będzie ten sam</string>
     <string name="d101">Log zostanie wysłany automatycznie</string>
+    <string name="response_password">Błąd! Ta skrzynka wymaga hasła</string>
+    <string name="response_no_internet">Błąd! Brak dostepu do Internetu</string>
+    <string name="response_success">Log wysłany pomyslnie</string>
+    <string name="already_submitted">Błąd! Ta skrzynka jest już zalogowana</string>
+    <string name="response_bad_password">Błąd! Złe hasło</string>
 </resources>

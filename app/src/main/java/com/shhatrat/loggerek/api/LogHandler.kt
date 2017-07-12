@@ -1,5 +1,6 @@
 package com.shhatrat.loggerek.api
 
+import com.shhatrat.loggerek.models.OcResponse.*
 import android.app.Activity
 import android.app.getKoin
 import android.content.Intent
@@ -9,10 +10,7 @@ import com.kenny.snackbar.SnackBarItem
 import com.kenny.snackbar.SnackBarListener
 import com.shhatrat.loggerek.R
 import com.shhatrat.loggerek.activities.FullLogActivity
-import com.shhatrat.loggerek.models.Log
-import com.shhatrat.loggerek.models.LogRequest
-import com.shhatrat.loggerek.models.OcResponse
-import com.shhatrat.loggerek.models.Unsend
+import com.shhatrat.loggerek.models.*
 import de.mateware.snacky.Snacky
 import io.realm.Realm
 import retrofit2.Response
@@ -26,7 +24,7 @@ class LogHandler(val activity : Activity) {
     val sharedPreferences by lazy{activity.getKoin().get<SharedPreferences>()}
     val realm by lazy{activity.getKoin().get<Realm>()}
     val retrofit by lazy{activity.getKoin().get<Api>()}
-    fun success(request : LogRequest, u : Response<Log>, note : String? = null) {
+    fun success(request : LogRequest, u : Response<Log>, note : String? = null, finishAfter :Boolean = false) {
         if(!u.isSuccessful) {
             realm.saveLogtoDb(request, u.message(), u.body()!!.message)
             showSnackbar(u)
@@ -73,6 +71,7 @@ class LogHandler(val activity : Activity) {
                             val intent = Intent(activity, FullLogActivity::class.java)
                             intent.putExtra("unsend", request)
                             activity.startActivity(intent)
+                            if(finishAfter)
                             activity.finish()
                         }
                     })
@@ -85,7 +84,7 @@ class LogHandler(val activity : Activity) {
 
     private fun showSnackbar(u: Response<Log>) {
         SnackBarItem.Builder(activity)
-                .setMessage(u.body()!!.message)
+                .setMessage(u.body()!!.message.translateResponse(activity))
                 .setSnackBarMessageColorResource(R.color.md_black_1000)
                 .setSnackBarBackgroundColorResource(R.color.md_white_1000)
                 .setInterpolatorResource(android.R.interpolator.accelerate_decelerate)

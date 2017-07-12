@@ -2,6 +2,7 @@ package com.shhatrat.loggerek.adapters
 
 import android.app.Activity
 import android.app.getKoin
+import android.content.Context
 import android.content.Intent
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
@@ -14,6 +15,7 @@ import com.shhatrat.loggerek.activities.FullLogActivity
 import com.shhatrat.loggerek.activities.getUTF8String
 import com.shhatrat.loggerek.api.LogHandler
 import com.shhatrat.loggerek.models.Unsend
+import com.shhatrat.loggerek.models.translateResponse
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -56,15 +58,15 @@ class UnsendAdapter (var c: Activity, var lists: ArrayList<Unsend>) : RecyclerVi
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
-        (holder as ViewHolder).bindData(lists[position])
+        (holder as ViewHolder).bindData(lists[position], c = c)
             retrofit.geocache(lists[position].cacheOp!!, "name".getUTF8String())
                     .subscribeOn(io.reactivex.schedulers.Schedulers.newThread())
                     .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                     .subscribe({
                         u ->
-                        (holder as ViewHolder).bindData(lists[position], u.name)
+                        (holder as ViewHolder).bindData(lists[position], u.name, c = c)
                     }, {
-                        (holder as ViewHolder).bindData(lists[position])
+                        (holder as ViewHolder).bindData(lists[position], c = c)
                     })
 
             holder?.itemView?.unsend_constraint_layout?.setOnClickListener {
@@ -87,7 +89,7 @@ class UnsendAdapter (var c: Activity, var lists: ArrayList<Unsend>) : RecyclerVi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     u -> run{
-                    LogHandler(c).success(unsend.getParcel(), u)
+                    LogHandler(c).success(unsend.getParcel(), u, finishAfter = false)
                 }}, {
                     e ->
                     run {
@@ -117,8 +119,8 @@ class UnsendAdapter (var c: Activity, var lists: ArrayList<Unsend>) : RecyclerVi
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindData(u: Unsend, cacheName : String = u.cacheOp!!) {
-            itemView.unsend_row_title.text = "$cacheName - ${u.type}"
+        fun bindData(u: Unsend, cacheName : String = u.cacheOp!!, c : Context) {
+            itemView.unsend_row_title.text = "$cacheName - ${u.type.translateResponse(c)}"
             itemView.unsend_row_conent.text = u.log
         }
     }

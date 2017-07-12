@@ -43,4 +43,10 @@
     <string name="d7">click this link</string>
     <string name="d8">result will be the same</string>
     <string name="d101">log will be send automatically</string>
+    <string name="response_password">This cache requires a password. You didn\'t provide one!</string>
+    <string name="response_no_internet">No access to the Internet</string>
+    <string name="response_success">Your cache log entry was posted successfully.</string>
+    <string name="already_submitted">You have already submitted a "Found it" log entry once.</string>
+    <string name="response_bad_password">Invalid password!</string>
+    <string name="uploading_log">Uploading log...</string>
 </resources>
