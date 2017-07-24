@@ -22,7 +22,7 @@ import se.akerfeldt.okhttp.signpost.SigningInterceptor
  * Created by szymon on 16.06.17.
  */
 class Module : AndroidModule(){
-    override fun onLoad() {
+    override fun context() =
             declareContext {
                 provide { createLoggingIntercpetor()}
                 provide { createOAuth(resources.getString(consumer_key), resources.getString(consumer_secret)) }
@@ -32,7 +32,6 @@ class Module : AndroidModule(){
                 provide { realm()}
                 provide { sharedPreferences(get()) }
             }
-    }
 
     fun sharedPreferences(c : Context): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(c)
